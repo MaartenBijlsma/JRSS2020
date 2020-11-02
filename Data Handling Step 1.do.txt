@@ -1,0 +1,4229 @@
+/*British Cohort Study*/
+
+/*This is a data handling file created by student assistant Joshua Perleberg*/
+/*This file should be run as a STATA .do file*/
+
+clear
+cd "N:\British Cohort Study\UK_data"
+set more off
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+/*Pregnancy*/
+
+********************************************************************************
+
+/*6557-Thirty-Eight-Year Follow-Up, 2008-2009*/
+
+clear
+use "N:\British Cohort Study\UK_data\6557-Thirty-Eight-Year Follow-Up, 2008-2009\stata9_se\bcs_2008_followup.dta" 
+
+keep bcsid b8cmsex b8gender bd8sex bd8gendd b8nump b8pregit b8everpg b8pgmany b8pregn1 b8pregn2 b8pregn3 b8pregn4 b8pregn5 b8pregn6 b8pregn7 b8pregn8 b8preg11 b8preg12 b8preg13 b8preg21 b8preg22 b8preg31 b8preg32 b8preg41 b8preg42 b8preg43 b8preg44 b8preg51 b8preg61 b8preg62 b8preg71 b8preg81 b8livh11 b8livh12 b8livh13 b8livh21 b8livh22 b8livh31 b8livh32 b8livh41 b8livh42 b8livh43 b8livh44 b8livh51 b8livh61 b8livh62 b8livh71 b8livh81 b8prgc11 b8prgc12 b8prgc13 b8prgc21 b8prgc22 b8prgc31 b8prgc32 b8prgc41 b8prgc42 b8prgc43 b8prgc44 b8prgc51 b8prgc61 b8prgc62 b8prgc71 b8prgc81 b8prgm11 b8prgm12 b8prgm13 b8prgm21 b8prgm22 b8prgm31 b8prgm32 b8prgm41 b8prgm42 b8prgm43 b8prgm44 b8prgm51 b8prgm61 b8prgm62 b8prgm71 b8prgm81 b8prgy11 b8prgy12 b8prgy13 b8prgy21 b8prgy22 b8prgy31 b8prgy32 b8prgy41 b8prgy42 b8prgy43 b8prgy44 b8prgy51 b8prgy61 b8prgy62 b8prgy71 b8prgy81 b8endbih
+numlabel _all, add
+gen sex=b8cmsex
+replace sex=3 if b8gender==1
+label de sex 1"Male" 2"Female" 3"Gender Reassignment (Male to Female)", modify
+label values sex sex
+label variable sex "Gender of Cohort Member"
+gen firstbirthyr=b8prgy11
+replace firstbirthy=. if b8prgy11<0
+tab firstbirthy
+sum firstbirthy
+hist firstbirthy, w(1) start(1986)
+gen birth=1970
+gen numfstbirth=b8pregn1
+replace numfstbirth=. if b8pregn1<0
+gen failure=0
+replace failure=1 if numfstbirth!=.
+gen event=firstbirthy
+replace event=2009 if firstbirthy==.
+tab event failure
+stset event, failure(failure)origin(birth) id(bcsid)
+stptime, by(sex)
+sts graph, sur by (sex)
+/*Analysis Time = age of cohort member*/
+stptime
+sts graph
+
+g b8prgcmc11=12*(b8prgy11-1900)+b8prgm11
+g b8prgcmc12=12*(b8prgy12-1900)+b8prgm12
+g b8prgcmc13=12*(b8prgy13-1900)+b8prgm13
+g b8prgcmc21=12*(b8prgy21-1900)+b8prgm21
+g b8prgcmc22=12*(b8prgy22-1900)+b8prgm22
+g b8prgcmc31=12*(b8prgy31-1900)+b8prgm31
+g b8prgcmc32=12*(b8prgy32-1900)+b8prgm32
+g b8prgcmc41=12*(b8prgy41-1900)+b8prgm41
+g b8prgcmc42=12*(b8prgy42-1900)+b8prgm42
+g b8prgcmc43=12*(b8prgy43-1900)+b8prgm43
+g b8prgcmc44=12*(b8prgy44-1900)+b8prgm44
+g b8prgcmc51=12*(b8prgy51-1900)+b8prgm51
+g b8prgcmc61=12*(b8prgy61-1900)+b8prgm61
+g b8prgcmc62=12*(b8prgy62-1900)+b8prgm62
+g b8prgcmc71=12*(b8prgy71-1900)+b8prgm71
+g b8prgcmc81=12*(b8prgy81-1900)+b8prgm81
+
+replace b8prgcmc11=12*(b8prgy11-1900)+6 if b8prgm11<1
+replace b8prgcmc12=12*(b8prgy12-1900)+6 if b8prgm12<1
+replace b8prgcmc13=12*(b8prgy13-1900)+6 if b8prgm13<1
+replace b8prgcmc21=12*(b8prgy21-1900)+6 if b8prgm21<1
+replace b8prgcmc22=12*(b8prgy22-1900)+6 if b8prgm22<1
+replace b8prgcmc31=12*(b8prgy31-1900)+6 if b8prgm31<1
+replace b8prgcmc32=12*(b8prgy32-1900)+6 if b8prgm32<1
+replace b8prgcmc41=12*(b8prgy41-1900)+6 if b8prgm41<1
+replace b8prgcmc42=12*(b8prgy42-1900)+6 if b8prgm42<1
+replace b8prgcmc43=12*(b8prgy43-1900)+6 if b8prgm43<1
+replace b8prgcmc44=12*(b8prgy44-1900)+6 if b8prgm44<1
+replace b8prgcmc51=12*(b8prgy51-1900)+6 if b8prgm51<1
+replace b8prgcmc61=12*(b8prgy61-1900)+6 if b8prgm61<1
+replace b8prgcmc62=12*(b8prgy62-1900)+6 if b8prgm62<1
+replace b8prgcmc71=12*(b8prgy71-1900)+6 if b8prgm71<1
+replace b8prgcmc81=12*(b8prgy81-1900)+6 if b8prgm81<1
+
+replace b8prgcmc11=. if b8prgcmc11<1
+replace b8prgcmc12=. if b8prgcmc12<1
+replace b8prgcmc13=. if b8prgcmc13<1
+replace b8prgcmc21=. if b8prgcmc21<1
+replace b8prgcmc22=. if b8prgcmc22<1
+replace b8prgcmc31=. if b8prgcmc31<1
+replace b8prgcmc32=. if b8prgcmc32<1
+replace b8prgcmc41=. if b8prgcmc41<1
+replace b8prgcmc42=. if b8prgcmc42<1
+replace b8prgcmc43=. if b8prgcmc43<1
+replace b8prgcmc44=. if b8prgcmc44<1
+replace b8prgcmc51=. if b8prgcmc51<1
+replace b8prgcmc61=. if b8prgcmc61<1
+replace b8prgcmc62=. if b8prgcmc62<1
+replace b8prgcmc71=. if b8prgcmc71<1
+replace b8prgcmc81=. if b8prgcmc81<1
+
+drop b8prgm11 b8prgm12 b8prgm13 b8prgm21 b8prgm22 b8prgm31 b8prgm32 b8prgm41 b8prgm42 b8prgm43 b8prgm44 b8prgm51 b8prgm61 b8prgm62 b8prgm71 b8prgm81
+
+save "pregnancy2008", replace
+
+clear
+use "pregnancy2008"
+numlabel _all, add
+
+/*
+tab b8cmsex bd8sex, if b8gender==1
+tab bcsid if b8gender==1
+tab bd8gendd
+Person "B15752S" had a gender reassignment from Male to Female 
+*/
+
+/*
+gen psex1=.
+gen psex2=.
+gen psex3=.
+gen psex4=.
+gen psex5=.
+gen psex6=.
+gen psex7=.
+gen psex8=.
+replace psex1=1 if b8prgc11==1
+replace psex1=2 if b8prgc11==2
+replace psex1=11 if b8prgc11==1 & b8prgc12==1
+replace psex1=12 if b8prgc11==1 & b8prgc12==2
+replace psex1=21 if b8prgc11==2 & b8prgc12==1
+replace psex1=22 if b8prgc11==2 & b8prgc12==2
+replace psex1=111 if b8prgc11==1 & b8prgc12==1 & b8prgc13==1
+replace psex1=112 if b8prgc11==1 & b8prgc12==1 & b8prgc13==2
+replace psex1=121 if b8prgc11==1 & b8prgc12==2 & b8prgc13==1
+replace psex1=211 if b8prgc11==2 & b8prgc12==1 & b8prgc13==1
+replace psex1=122 if b8prgc11==1 & b8prgc12==2 & b8prgc13==2
+replace psex1=212 if b8prgc11==2 & b8prgc12==1 & b8prgc13==2
+replace psex1=221 if b8prgc11==2 & b8prgc12==2 & b8prgc13==1
+replace psex1=222 if b8prgc11==2 & b8prgc12==2 & b8prgc13==2
+label de psex 1"Boy" 2"Girl" 11"BB" 12"BG" 21"GB" 22"GG" 111"BBB" 112"BBG" 121"BGB" 211"GBB" 122"BGG" 212"GBG" 221"GGB" 222"GGG", modify
+label values psex1 psex
+tab psex1
+/*Problem: Person "B21451V" have 3 Children, but the first one was a miscarriage--> psex1 does not work*/
+*/
+
+/*
+gen pnbr1=b8pregn1
+gen pnbr2=b8pregn2
+gen pnbr3=b8pregn3
+gen pnbr4=b8pregn4
+gen pnbr5=b8pregn5
+gen pnbr6=b8pregn6
+gen pnbr7=b8pregn7
+gen pnbr8=b8pregn8
+
+replace pnbr1=0 if b8pregn1==-1 | b8pregn1==-8
+replace pnbr2=0 if b8pregn2==-1 | b8pregn2==-8
+replace pnbr3=0 if b8pregn3==-1 | b8pregn3==-8
+replace pnbr4=0 if b8pregn4==-1 | b8pregn4==-8
+replace pnbr5=0 if b8pregn5==-1 | b8pregn5==-8
+replace pnbr6=0 if b8pregn6==-1 | b8pregn6==-8
+replace pnbr7=0 if b8pregn7==-1 | b8pregn7==-8
+replace pnbr8=0 if b8pregn8==-1 | b8pregn8==-8
+*/
+
+gen pmis1=.
+gen pmis2=.
+gen pmis3=.
+gen pmis4=.
+gen pmis5=.
+gen pmis6=.
+gen pmis7=.
+gen pmis8=.
+label variable pmis1 "Stillbirth, Miscarriage or Termination(P1)"
+label variable pmis2 "Stillbirth, Miscarriage or Termination(P2)"
+label variable pmis3 "Stillbirth, Miscarriage or Termination(P3)"
+label variable pmis4 "Stillbirth, Miscarriage or Termination(P4)"
+label variable pmis5 "Stillbirth, Miscarriage or Termination(P5)"
+label variable pmis6 "Stillbirth, Miscarriage or Termination(P6)"
+label variable pmis7 "Stillbirth, Miscarriage or Termination(P7)"
+label variable pmis8 "Stillbirth, Miscarriage or Termination(P8)"
+
+replace pmis1=100 if (b8preg11==2 | b8preg11==3 | b8preg11==4)
+replace pmis2=100 if (b8preg21==2 | b8preg21==3 | b8preg21==4)
+replace pmis3=100 if (b8preg31==2 | b8preg31==3 | b8preg31==4)
+replace pmis4=100 if (b8preg41==2 | b8preg41==3 | b8preg41==4)
+replace pmis5=100 if (b8preg51==2 | b8preg51==3 | b8preg51==4)
+replace pmis6=100 if (b8preg61==2 | b8preg61==3 | b8preg61==4)
+replace pmis7=100 if (b8preg71==2 | b8preg71==3 | b8preg71==4)
+replace pmis8=100 if (b8preg81==2 | b8preg81==3 | b8preg81==4)
+
+replace pmis1=010 if (b8preg12==2 | b8preg12==3 | b8preg12==4)
+replace pmis2=010 if (b8preg22==2 | b8preg22==3 | b8preg22==4)
+replace pmis3=010 if (b8preg32==2 | b8preg32==3 | b8preg32==4)
+replace pmis4=010 if (b8preg42==2 | b8preg42==3 | b8preg42==4)
+replace pmis6=010 if (b8preg62==2 | b8preg62==3 | b8preg62==4)
+
+replace pmis1=001 if (b8preg13==2 | b8preg13==3 | b8preg13==4)
+replace pmis4=001 if (b8preg43==2 | b8preg43==3 | b8preg43==4)
+
+replace pmis4=002 if (b8preg44==2 | b8preg44==3 | b8preg44==4)
+
+replace pmis1=110 if (b8preg11==2 | b8preg11==3 | b8preg11==4) & (b8preg12==2 | b8preg12==3 | b8preg12==4)
+replace pmis2=110 if (b8preg21==2 | b8preg21==3 | b8preg21==4) & (b8preg22==2 | b8preg22==3 | b8preg22==4)
+replace pmis3=110 if (b8preg31==2 | b8preg31==3 | b8preg31==4) & (b8preg32==2 | b8preg32==3 | b8preg32==4)
+replace pmis4=110 if (b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg42==2 | b8preg42==3 | b8preg42==4)
+replace pmis6=110 if (b8preg61==2 | b8preg61==3 | b8preg61==4) & (b8preg62==2 | b8preg62==3 | b8preg62==4)
+
+replace pmis1=101 if (b8preg11==2 | b8preg11==3 | b8preg11==4) & (b8preg13==2 | b8preg13==3 | b8preg13==4)
+replace pmis4=101 if (b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg43==2 | b8preg43==3 | b8preg43==4)
+
+replace pmis1=011 if (b8preg12==2 | b8preg12==3 | b8preg12==4) & (b8preg13==2 | b8preg13==3 | b8preg13==4)
+replace pmis4=011 if (b8preg42==2 | b8preg42==3 | b8preg42==4) & (b8preg43==2 | b8preg43==3 | b8preg43==4)
+
+replace pmis4=300 if (b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg44==2 | b8preg44==3 | b8preg44==4)
+replace pmis4=030 if (b8preg42==2 | b8preg42==3 | b8preg42==4) & (b8preg44==2 | b8preg44==3 | b8preg44==4)
+replace pmis4=003 if (b8preg43==2 | b8preg43==3 | b8preg43==4) & (b8preg44==2 | b8preg44==3 | b8preg44==4)
+
+replace pmis1=111 if (b8preg11==2 | b8preg11==3 | b8preg11==4) & (b8preg12==2 | b8preg12==3 | b8preg12==4) & (b8preg13==2 | b8preg13==3 | b8preg13==4)
+replace pmis4=111 if (b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg42==2 | b8preg42==3 | b8preg42==4) & (b8preg43==2 | b8preg43==3 | b8preg43==4)
+
+replace pmis4=330 if (b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg42==2 | b8preg42==3 | b8preg42==4) & (b8preg44==2 | b8preg44==3 | b8preg44==4)
+replace pmis4=303 if (b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg43==2 | b8preg43==3 | b8preg43==4) & (b8preg44==2 | b8preg44==3 | b8preg44==4)
+replace pmis4=033 if (b8preg42==2 | b8preg42==3 | b8preg42==4) & (b8preg43==2 | b8preg43==3 | b8preg43==4) & (b8preg44==2 | b8preg44==3 | b8preg44==4)
+
+replace pmis4=333 if (b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg42==2 | b8preg42==3 | b8preg42==4) & (b8preg43==2 | b8preg43==3 | b8preg43==4) & (b8preg44==2 | b8preg44==3 | b8preg44==4)
+
+label de pmis 010"Second Child" 100"only first Child" 110"First & Second Child" 333"All 4 Children"
+label values pmis1 pmis
+label values pmis2 pmis
+label values pmis3 pmis
+label values pmis4 pmis
+label values pmis5 pmis
+label values pmis6 pmis
+label values pmis7 pmis
+label values pmis8 pmis
+
+gen pdea1=0
+gen pdea2=0
+gen pdea3=0
+gen pdea4=0
+gen pdea5=0
+gen pdea6=0
+gen pdea7=0
+gen pdea8=0
+replace pdea1=1 if pmis1==100 | pmis1==010
+replace pdea2=1 if pmis2==100 | pmis2==010
+replace pdea3=1 if pmis3==100 | pmis3==010
+replace pdea4=1 if pmis4==100 | pmis4==010
+replace pdea5=1 if pmis5==100 | pmis5==010
+replace pdea6=1 if pmis6==100 | pmis6==010
+replace pdea7=1 if pmis7==100 | pmis7==010
+replace pdea8=1 if pmis8==100 | pmis8==010
+replace pdea1=2 if pmis1==110
+replace pdea2=2 if pmis2==110
+replace pdea3=2 if pmis3==110
+replace pdea4=2 if pmis4==110
+replace pdea5=2 if pmis5==110
+replace pdea6=2 if pmis6==110
+replace pdea7=2 if pmis7==110
+replace pdea8=2 if pmis8==110
+replace pdea4=4 if pmis4==333
+label variable pdea1 "Number of death babies during Pregnancy 1 (Stillbirth, Miscarriage or Termination(P1))"
+label variable pdea2 "Number of death babies during Pregnancy 2 (Stillbirth, Miscarriage or Termination(P2))"
+label variable pdea3 "Number of death babies during Pregnancy 3 (Stillbirth, Miscarriage or Termination(P3))"
+label variable pdea4 "Number of death babies during Pregnancy 4 (Stillbirth, Miscarriage or Termination(P4))"
+label variable pdea5 "Number of death babies during Pregnancy 5 (Stillbirth, Miscarriage or Termination(P5))"
+label variable pdea6 "Number of death babies during Pregnancy 6 (Stillbirth, Miscarriage or Termination(P6))"
+label variable pdea7 "Number of death babies during Pregnancy 7 (Stillbirth, Miscarriage or Termination(P7))"
+label variable pdea8 "Number of death babies during Pregnancy 8 (Stillbirth, Miscarriage or Termination(P8))"
+/*
+tab pmis1 pdea1
+tab pmis2 pdea2
+tab pmis3 pdea3
+tab pmis4 pdea4
+tab pmis5 pdea5
+tab pmis6 pdea6
+tab pmis7 pdea7
+tab pmis8 pdea8
+*/
+
+gen pnum1=0
+gen pnum2=0
+gen pnum3=0
+gen pnum4=0
+gen pnum5=0
+gen pnum6=0
+gen pnum7=0
+gen pnum8=0
+label variable pnum1 "Number of Babies during Pregnancy 1(P1)"
+label variable pnum2 "Number of Babies during Pregnancy 2(P2)"
+label variable pnum3 "Number of Babies during Pregnancy 3(P3)"
+label variable pnum4 "Number of Babies during Pregnancy 4(P4)"
+label variable pnum5 "Number of Babies during Pregnancy 5(P5)"
+label variable pnum6 "Number of Babies during Pregnancy 6(P6)"
+label variable pnum7 "Number of Babies during Pregnancy 7(P7)"
+label variable pnum8 "Number of Babies during Pregnancy 8(P8)"
+
+/*
+tab b8preg11 b8preg12
+tab b8preg21 b8preg22
+tab b8preg31 b8preg32
+tab b8preg41 b8preg42
+tab b8preg61 b8preg62
+*/
+
+replace pnum1=1 if b8preg11==1 | b8preg11==2 | b8preg11==3 | b8preg11==4
+replace pnum2=1 if b8preg21==1 | b8preg21==2 | b8preg21==3 | b8preg21==4
+replace pnum3=1 if b8preg31==1 | b8preg31==2 | b8preg31==3 | b8preg31==4
+replace pnum4=1 if b8preg41==1 | b8preg41==2 | b8preg41==3 | b8preg41==4
+replace pnum5=1 if b8preg51==1 | b8preg51==2 | b8preg51==3 | b8preg51==4
+replace pnum6=1 if b8preg61==1 | b8preg61==2 | b8preg61==3 | b8preg61==4
+replace pnum7=1 if b8preg71==1 | b8preg71==2 | b8preg71==3 | b8preg71==4
+replace pnum8=1 if b8preg81==1 | b8preg81==2 | b8preg81==3 | b8preg81==4
+
+replace pnum1=2 if (b8preg11==1 | b8preg11==2 | b8preg11==3 | b8preg11==4) & (b8preg12==1 | b8preg12==2 | b8preg12==3 | b8preg12==4)
+replace pnum2=2 if (b8preg21==1 | b8preg21==2 | b8preg21==3 | b8preg21==4) & (b8preg22==1 | b8preg22==2 | b8preg22==3 | b8preg22==4)
+replace pnum3=2 if (b8preg31==1 | b8preg31==2 | b8preg31==3 | b8preg31==4) & (b8preg32==1 | b8preg32==2 | b8preg32==3 | b8preg32==4)
+replace pnum4=2 if (b8preg41==1 | b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg42==1 | b8preg42==2 | b8preg42==3 | b8preg42==4)
+replace pnum6=2 if (b8preg61==1 | b8preg61==2 | b8preg61==3 | b8preg61==4) & (b8preg62==1 | b8preg62==2 | b8preg62==3 | b8preg62==4)
+
+
+replace pnum1=3 if (b8preg11==1 | b8preg11==2 | b8preg11==3 | b8preg11==4) & (b8preg12==1 | b8preg12==2 | b8preg12==3 | b8preg12==4) & (b8preg13==1 | b8preg13==2 | b8preg13==3 | b8preg13==4)
+replace pnum4=3 if (b8preg41==1 | b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg42==1 | b8preg42==2 | b8preg42==3 | b8preg42==4) & (b8preg43==1 | b8preg43==2 | b8preg43==3 | b8preg43==4)
+
+replace pnum4=4 if (b8preg41==1 | b8preg41==2 | b8preg41==3 | b8preg41==4) & (b8preg42==1 | b8preg42==2 | b8preg42==3 | b8preg42==4) & (b8preg43==1 | b8preg43==2 | b8preg43==3 | b8preg43==4) & (b8preg44==1 | b8preg44==2 | b8preg44==3 | b8preg44==4)
+
+/*
+gen dif= pnum1-pnbr1
+tab pnum1 pnbr1 if b8preg11==5
+tab b8prgcmc11 if b8preg11==5, m
+tab b8preg11 dif
+tab b8cmsex if b8preg11==-8 & dif==-1
+tab b8prgcmc11 if dif==-1, m
+tab b8prgcmc11 b8preg11 if dif==1, m
+*/
+
+gen pliv1=pnum1-pdea1
+gen pliv2=pnum2-pdea2
+gen pliv3=pnum3-pdea3
+gen pliv4=pnum4-pdea4
+gen pliv5=pnum5-pdea5
+gen pliv6=pnum6-pdea6
+gen pliv7=pnum7-pdea7
+gen pliv8=pnum8-pdea8
+label variable pliv1 "Number of Live Birth during Pregnancy 1(P1)"
+label variable pliv2 "Number of Live Birth during Pregnancy 2(P2)"
+label variable pliv3 "Number of Live Birth during Pregnancy 3(P3)"
+label variable pliv4 "Number of Live Birth during Pregnancy 4(P4)"
+label variable pliv5 "Number of Live Birth during Pregnancy 5(P5)"
+label variable pliv6 "Number of Live Birth during Pregnancy 6(P6)"
+label variable pliv7 "Number of Live Birth during Pregnancy 7(P7)"
+label variable pliv8 "Number of Live Birth during Pregnancy 8(P8)"
+
+gen pcmc1=b8prgcmc11 if b8preg11==1
+replace pcmc1=b8prgcmc12 if b8preg12==1 & pcmc1==.
+replace pcmc1=b8prgcmc13 if b8preg13==1 & pcmc1==.
+gen pcmc2=b8prgcmc21 if b8preg21==1
+replace pcmc2=b8prgcmc22 if b8preg22==1 & pcmc2==.
+gen pcmc3=b8prgcmc31 if b8preg31==1
+replace pcmc3=b8prgcmc32 if b8preg32==1 & pcmc3==.
+gen pcmc4=b8prgcmc41 if b8preg41==1
+replace pcmc4=b8prgcmc42 if b8preg42==1 & pcmc4==.
+replace pcmc4=b8prgcmc43 if b8preg43==1 & pcmc4==.
+replace pcmc4=b8prgcmc44 if b8preg44==1 & pcmc4==.
+gen pcmc5=b8prgcmc51
+gen pcmc6=b8prgcmc61 if b8preg61==1
+replace pcmc6=b8prgcmc62 if b8preg62==1 & pcmc6==.
+gen pcmc7=b8prgcmc71
+gen pcmc8=b8prgcmc81
+
+replace pcmc1=(b8prgcmc11+b8prgcmc12)/2 if pnum1==2 & pcmc1==.
+replace pcmc2=(b8prgcmc21+b8prgcmc22)/2 if pnum2==2 & pcmc2==.
+replace pcmc3=(b8prgcmc31+b8prgcmc32)/2 if pnum3==2 & pcmc3==.
+replace pcmc4=(b8prgcmc41+b8prgcmc42)/2 if pnum4==2 & pcmc4==.
+replace pcmc6=(b8prgcmc61+b8prgcmc62)/2 if pnum6==2 & pcmc6==.
+replace pcmc1=(b8prgcmc11+b8prgcmc12+b8prgcmc13)/3 if pnum1==3 & pcmc1==.
+replace pcmc4=(b8prgcmc41+b8prgcmc42+b8prgcmc43)/3 if pnum4==3 & pcmc4==.
+replace pcmc4=(b8prgcmc41+b8prgcmc42+b8prgcmc43+b8prgcmc44)/4 if pnum4==4 & pcmc4==.
+
+replace pcmc1=b8prgcmc11 if pcmc1==.
+replace pcmc1=b8prgcmc12 if pcmc1==.
+replace pcmc1=b8prgcmc13 if pcmc1==.
+replace pcmc2=b8prgcmc21 if pcmc2==.
+replace pcmc2=b8prgcmc22 if pcmc2==.
+replace pcmc3=b8prgcmc31 if pcmc3==.
+replace pcmc3=b8prgcmc32 if pcmc3==.
+replace pcmc4=b8prgcmc41 if pcmc4==.
+replace pcmc4=b8prgcmc42 if pcmc4==.
+replace pcmc4=b8prgcmc43 if pcmc4==.
+replace pcmc4=b8prgcmc44 if pcmc4==.
+replace pcmc6=b8prgcmc62 if pcmc6==.
+
+label variable pcmc1 "Date of Birth in CMC of Pregnancy 1(P1)"
+label variable pcmc2 "Date of Birth in CMC of Pregnancy 2(P2)"
+label variable pcmc3 "Date of Birth in CMC of Pregnancy 3(P3)"
+label variable pcmc4 "Date of Birth in CMC of Pregnancy 4(P4)"
+label variable pcmc5 "Date of Birth in CMC of Pregnancy 5(P5)"
+label variable pcmc6 "Date of Birth in CMC of Pregnancy 6(P6)"
+label variable pcmc7 "Date of Birth in CMC of Pregnancy 7(P7)"
+label variable pcmc8 "Date of Birth in CMC of Pregnancy 8(P8)"
+
+/*
+tab pcmc1 pnum1, m
+tab pcmc1 pdea1, m
+tab pcmc1 pliv1, m
+tab pliv1 pdea1 if pcmc1==.
+tab b8prgcmc12 if pcmc1==., m
+*/
+
+gen curp1=0
+gen curp2=0
+gen curp3=0
+gen curp4=0
+gen curp5=0
+gen curp6=0
+gen curp7=0
+gen curp8=0
+label variable curp1 "Current pregnant in Pregnancy 1 with x children(P1)"
+label variable curp2 "Current pregnant in Pregnancy 2 with x children(P2)"
+label variable curp3 "Current pregnant in Pregnancy 3 with x children(P3)"
+label variable curp4 "Current pregnant in Pregnancy 4 with x children(P4)"
+label variable curp5 "Current pregnant in Pregnancy 5 with x children(P5)"
+label variable curp6 "Current pregnant in Pregnancy 6 with x children(P6)"
+label variable curp7 "Current pregnant in Pregnancy 7 with x children(P7)"
+label variable curp8 "Current pregnant in Pregnancy 8 with x children(P8)"
+
+replace curp1=1 if b8preg11==5
+replace curp2=1 if b8preg21==5
+replace curp3=1 if b8preg31==5
+replace curp4=1 if b8preg41==5
+replace curp5=1 if b8preg51==5
+replace curp6=1 if b8preg61==5
+replace curp7=1 if b8preg71==5
+replace curp8=1 if b8preg81==5
+
+replace curp1=2 if b8preg11==5 & b8preg12==5
+replace curp2=2 if b8preg21==5 & b8preg22==5
+replace curp3=2 if b8preg31==5 & b8preg32==5
+replace curp4=2 if b8preg41==5 & b8preg42==5
+replace curp6=2 if b8preg61==5 & b8preg62==5
+
+replace curp1=3 if b8preg11==5 & b8preg12==5 & b8preg13==5
+replace curp4=3 if b8preg41==5 & b8preg42==5 & b8preg43==5
+
+replace curp4=4 if b8preg41==5 & b8preg42==5 & b8preg43==5 & b8preg44==5
+
+keep bcsid sex pmis1-pmis8 pdea1-pdea8 pnum1-pnum8 pliv1-pliv8 pcmc1-pcmc8 curp1-curp8
+
+rename pmis1 pmis08_1
+rename pmis2 pmis08_2
+rename pmis3 pmis08_3
+rename pmis4 pmis08_4
+rename pmis5 pmis08_5
+rename pmis6 pmis08_6
+rename pmis7 pmis08_7
+rename pmis8 pmis08_8
+rename pdea1 pdea08_1
+rename pdea2 pdea08_2
+rename pdea3 pdea08_3
+rename pdea4 pdea08_4
+rename pdea5 pdea08_5
+rename pdea6 pdea08_6
+rename pdea7 pdea08_7
+rename pdea8 pdea08_8
+rename pnum1 pnum08_1
+rename pnum2 pnum08_2
+rename pnum3 pnum08_3
+rename pnum4 pnum08_4
+rename pnum5 pnum08_5
+rename pnum6 pnum08_6
+rename pnum7 pnum08_7
+rename pnum8 pnum08_8
+rename pliv1 pliv08_1
+rename pliv2 pliv08_2
+rename pliv3 pliv08_3
+rename pliv4 pliv08_4
+rename pliv5 pliv08_5
+rename pliv6 pliv08_6
+rename pliv7 pliv08_7
+rename pliv8 pliv08_8
+rename pcmc1 pcmc08_1
+rename pcmc2 pcmc08_2
+rename pcmc3 pcmc08_3
+rename pcmc4 pcmc08_4
+rename pcmc5 pcmc08_5
+rename pcmc6 pcmc08_6
+rename pcmc7 pcmc08_7
+rename pcmc8 pcmc08_8
+rename curp1 curp08_1
+rename curp2 curp08_2
+rename curp3 curp08_3
+rename curp4 curp08_4
+rename curp5 curp08_5
+rename curp6 curp08_6
+rename curp7 curp08_7
+rename curp8 curp08_8
+
+save "Pregnancy2008_wide", replace
+
+gen id=_n
+reshape long date event pliv08_ pcmc08_ pmis08_ pdea08_ pnum08_ curp08_, i(id)
+sort bcsid
+
+label variable curp08_ "Current pregnant in Pregnancy _j with x children(P_j)"
+label variable pcmc08_ "Date of Birth in CMC of Pregnancy _j(P_j)"
+label variable pliv08_ "Number of Live Birth during Pregnancy _j(P_j)"
+label variable pnum08_ "Number of Babies during Pregnancy _j(P8)"
+label variable pdea08_ "Number of death babies during Pregnancy _j (Stillbirth, Miscarriage or Termination(P_j))"
+label variable pmis08_ "Stillbirth, Miscarriage or Termination(P_j)"
+
+save "Pregnancy2008_long", replace
+
+clear
+use "Pregnancy2008_long"
+
+gen pyr=(pcmc08_/12)+1900
+replace pyr=. if pcmc==.
+replace pyr=1986 if pyr>=1986 & pyr<1987
+replace pyr=1987 if pyr>=1987 & pyr<1988
+replace pyr=1988 if pyr>=1988 & pyr<1989
+replace pyr=1989 if pyr>=1989 & pyr<1990
+replace pyr=1990 if pyr>=1990 & pyr<1991
+replace pyr=1991 if pyr>=1991 & pyr<1992
+replace pyr=1992 if pyr>=1992 & pyr<1993
+replace pyr=1993 if pyr>=1993 & pyr<1994
+replace pyr=1994 if pyr>=1994 & pyr<1995
+replace pyr=1995 if pyr>=1995 & pyr<1996
+replace pyr=1996 if pyr>=1996 & pyr<1997
+replace pyr=1997 if pyr>=1997 & pyr<1998
+replace pyr=1998 if pyr>=1998 & pyr<1999
+replace pyr=1999 if pyr>=1999 & pyr<2000
+replace pyr=2000 if pyr>=2000 & pyr<2001
+replace pyr=2001 if pyr>=2001 & pyr<2002
+replace pyr=2002 if pyr>=2002 & pyr<2003
+replace pyr=2003 if pyr>=2003 & pyr<2004
+replace pyr=2004 if pyr>=2004 & pyr<2005
+replace pyr=2005 if pyr>=2005 & pyr<2006
+replace pyr=2006 if pyr>=2006 & pyr<2007
+replace pyr=2007 if pyr>=2007 & pyr<2008
+replace pyr=2008 if pyr>=2008 & pyr<2009
+replace pyr=2009 if pyr>=2009 & pyr<2010
+replace pyr=2010 if pyr>=2010 & pyr<2011
+
+tab pyr /*only 288 (of 4216) birth till 2000*/
+sum pyr /*avverage birth-age=35 much more relasitc is age 27*/
+hist pyr, w(1) start(1986) d
+
+********************************************************************************
+
+/*5585-Thirty-Four-Year Follow-Up, 2004-2005*/
+
+clear
+use "N:\British Cohort Study\UK_data\5585-Thirty-Four-Year Follow-Up, 2004-2005\stata9_se\bcs_2004_followup.dta" 
+
+keep bcsid bd7sex bd7prdn - bd7lvbth
+
+numlabel _all, add
+gen sex=bd7sex
+label variable sex "Gender of Cohort Member"
+gen firstbirthyr=b7prgy11
+replace firstbirthy=. if b7prgy11<0
+tab firstbirthy
+sum firstbirthy
+hist firstbirthy, w(1) start(1986)
+gen birth=1970
+gen numfstbirth=b7pregn1
+replace numfstbirth=. if b7pregn1<0
+gen failure=0
+replace failure=1 if numfstbirth!=.
+gen event=firstbirthy
+replace event=2006 if firstbirthy==.
+tab event failure
+stset event, failure(failure)origin(birth) id(bcsid)
+stptime, by(sex)
+sts graph, sur by (sex)
+/*Analysis Time = age of cohort member*/
+stptime
+sts graph
+
+g b7prgcmc11=12*(b7prgy11-1900)+b7prgm11
+g b7prgcmc12=12*(b7prgy12-1900)+b7prgm12
+g b7prgcmc13=12*(b7prgy13-1900)+b7prgm13
+g b7prgcmc21=12*(b7prgy21-1900)+b7prgm21
+g b7prgcmc22=12*(b7prgy22-1900)+b7prgm22
+g b7prgcmc23=12*(b7prgy23-1900)+b7prgm23
+g b7prgcmc31=12*(b7prgy31-1900)+b7prgm31
+g b7prgcmc32=12*(b7prgy32-1900)+b7prgm32
+g b7prgcmc41=12*(b7prgy41-1900)+b7prgm41
+g b7prgcmc51=12*(b7prgy51-1900)+b7prgm51
+g b7prgcmc61=12*(b7prgy61-1900)+b7prgm61
+g b7prgcmc71=12*(b7prgy71-1900)+b7prgm71
+g b7prgcmc81=12*(b7prgy81-1900)+b7prgm81
+
+replace b7prgcmc11=12*(b7prgy11-1900)+6 if b7prgm11<1
+replace b7prgcmc12=12*(b7prgy12-1900)+6 if b7prgm12<1
+replace b7prgcmc13=12*(b7prgy13-1900)+6 if b7prgm13<1
+replace b7prgcmc21=12*(b7prgy21-1900)+6 if b7prgm21<1
+replace b7prgcmc22=12*(b7prgy22-1900)+6 if b7prgm22<1
+replace b7prgcmc23=12*(b7prgy23-1900)+6 if b7prgm23<1
+replace b7prgcmc31=12*(b7prgy31-1900)+6 if b7prgm31<1
+replace b7prgcmc32=12*(b7prgy32-1900)+6 if b7prgm32<1
+replace b7prgcmc41=12*(b7prgy41-1900)+6 if b7prgm41<1
+replace b7prgcmc51=12*(b7prgy51-1900)+6 if b7prgm51<1
+replace b7prgcmc61=12*(b7prgy61-1900)+6 if b7prgm61<1
+replace b7prgcmc71=12*(b7prgy71-1900)+6 if b7prgm71<1
+replace b7prgcmc81=12*(b7prgy81-1900)+6 if b7prgm81<1
+
+replace b7prgcmc11=. if b7prgcmc11<1
+replace b7prgcmc12=. if b7prgcmc12<1
+replace b7prgcmc13=. if b7prgcmc13<1
+replace b7prgcmc21=. if b7prgcmc21<1
+replace b7prgcmc22=. if b7prgcmc22<1
+replace b7prgcmc23=. if b7prgcmc23<1
+replace b7prgcmc31=. if b7prgcmc31<1
+replace b7prgcmc32=. if b7prgcmc32<1
+replace b7prgcmc41=. if b7prgcmc41<1
+replace b7prgcmc51=. if b7prgcmc51<1
+replace b7prgcmc61=. if b7prgcmc61<1
+replace b7prgcmc71=. if b7prgcmc71<1
+replace b7prgcmc81=. if b7prgcmc81<1
+
+keep bcsid sex b7prgcmc11 b7prgcmc12 b7prgcmc13 b7prgcmc21 b7prgcmc22 b7prgcmc23 b7prgcmc31 b7prgcmc32 b7prgcmc41 b7prgcmc51 b7prgcmc61 b7prgcmc71 b7prgcmc81 ///
+	b7pregn1 b7pregn2 b7pregn3 b7pregn4 b7pregn5 b7pregn6 b7pregn7 b7pregn8 ///
+	b7preg11 b7preg12 b7preg13 b7preg21 b7preg22 b7preg23 b7preg31 b7preg32 b7preg41 b7preg51 b7preg61 b7preg71 b7preg81 ///
+	b7prgm11 b7prgm12 b7prgm13 b7prgm21 b7prgm22 b7prgm23 b7prgm31 b7prgm32 b7prgm41 b7prgm51 b7prgm61 b7prgm71 b7prgm81 ///
+	b7prgy11 b7prgy12 b7prgy13 b7prgy21 b7prgy22 b7prgy23 b7prgy31 b7prgy32 b7prgy41 b7prgy51 b7prgy61 b7prgy71 b7prgy81
+
+save "pregnancy2005", replace
+
+/*Pregnancy*/
+
+clear
+use "pregnancy2005"
+numlabel _all, add
+
+/*
+tab b8cmsex bd8sex, if b8gender==1
+tab bcsid if b8gender==1
+tab bd8gendd
+Person "B15752S" had a gender reassignment from Male to Female 
+*/
+
+tab b7preg11
+tab b7preg12
+tab b7preg13
+tab b7preg21
+tab b7preg22
+tab b7preg23
+tab b7preg31
+tab b7preg32
+tab b7preg41
+tab b7preg51
+tab b7preg61
+tab b7preg71
+tab b7preg81
+
+gen pmis1=.
+gen pmis2=.
+gen pmis3=.
+gen pmis4=.
+gen pmis5=.
+gen pmis6=.
+gen pmis7=.
+gen pmis8=.
+label variable pmis1 "Stillbirth, Miscarriage or Termination(P1)"
+label variable pmis2 "Stillbirth, Miscarriage or Termination(P2)"
+label variable pmis3 "Stillbirth, Miscarriage or Termination(P3)"
+label variable pmis4 "Stillbirth, Miscarriage or Termination(P4)"
+label variable pmis5 "Stillbirth, Miscarriage or Termination(P5)"
+label variable pmis6 "Stillbirth, Miscarriage or Termination(P6)"
+label variable pmis7 "Stillbirth, Miscarriage or Termination(P7)"
+label variable pmis8 "Stillbirth, Miscarriage or Termination(P8)"
+
+replace pmis1=100 if (b7preg11==2 | b7preg11==3 | b7preg11==4)
+replace pmis2=100 if (b7preg21==2 | b7preg21==3 | b7preg21==4)
+replace pmis3=100 if (b7preg31==2 | b7preg31==3 | b7preg31==4)
+replace pmis4=100 if (b7preg41==2 | b7preg41==3 | b7preg41==4)
+replace pmis5=100 if (b7preg51==2 | b7preg51==3 | b7preg51==4)
+replace pmis6=100 if (b7preg61==2 | b7preg61==3 | b7preg61==4)
+replace pmis7=100 if (b7preg71==2 | b7preg71==3 | b7preg71==4)
+replace pmis8=100 if (b7preg81==2 | b7preg81==3 | b7preg81==4)
+
+replace pmis1=010 if (b7preg12==2 | b7preg12==3 | b7preg12==4)
+replace pmis2=010 if (b7preg22==2 | b7preg22==3 | b7preg22==4)
+replace pmis3=010 if (b7preg32==2 | b7preg32==3 | b7preg32==4)
+
+replace pmis1=001 if (b7preg13==2 | b7preg13==3 | b7preg13==4)
+replace pmis2=001 if (b7preg23==2 | b7preg23==3 | b7preg23==4)
+
+replace pmis1=110 if (b7preg11==2 | b7preg11==3 | b7preg11==4) & (b7preg12==2 | b7preg12==3 | b7preg12==4)
+replace pmis2=110 if (b7preg21==2 | b7preg21==3 | b7preg21==4) & (b7preg22==2 | b7preg22==3 | b7preg22==4)
+replace pmis3=110 if (b7preg31==2 | b7preg31==3 | b7preg31==4) & (b7preg32==2 | b7preg32==3 | b7preg32==4)
+
+replace pmis1=101 if (b7preg11==2 | b7preg11==3 | b7preg11==4) & (b7preg13==2 | b7preg13==3 | b7preg13==4)
+replace pmis2=101 if (b7preg21==2 | b7preg21==3 | b7preg21==4) & (b7preg23==2 | b7preg23==3 | b7preg23==4)
+
+replace pmis1=011 if (b7preg12==2 | b7preg12==3 | b7preg12==4) & (b7preg13==2 | b7preg13==3 | b7preg13==4)
+replace pmis2=011 if (b7preg22==2 | b7preg22==3 | b7preg22==4) & (b7preg23==2 | b7preg23==3 | b7preg23==4)
+
+replace pmis1=111 if (b7preg11==2 | b7preg11==3 | b7preg11==4) & (b7preg12==2 | b7preg12==3 | b7preg12==4) & (b7preg13==2 | b7preg13==3 | b7preg13==4)
+replace pmis2=111 if (b7preg21==2 | b7preg21==3 | b7preg21==4) & (b7preg22==2 | b7preg22==3 | b7preg22==4) & (b7preg23==2 | b7preg23==3 | b7preg23==4)
+
+label de pmis 010"Second Child" 100"only first Child" 110"First & Second Child" 111"All 3 Children"
+label values pmis1 pmis
+label values pmis2 pmis
+label values pmis3 pmis
+label values pmis4 pmis
+label values pmis5 pmis
+label values pmis6 pmis
+label values pmis7 pmis
+label values pmis8 pmis
+
+gen pdea1=0
+gen pdea2=0
+gen pdea3=0
+gen pdea4=0
+gen pdea5=0
+gen pdea6=0
+gen pdea7=0
+gen pdea8=0
+replace pdea1=1 if pmis1==100 | pmis1==010
+replace pdea2=1 if pmis2==100 | pmis2==010
+replace pdea3=1 if pmis3==100 | pmis3==010
+replace pdea4=1 if pmis4==100 | pmis4==010
+replace pdea5=1 if pmis5==100 | pmis5==010
+replace pdea6=1 if pmis6==100 | pmis6==010
+replace pdea7=1 if pmis7==100 | pmis7==010
+replace pdea8=1 if pmis8==100 | pmis8==010
+replace pdea1=2 if pmis1==110
+replace pdea2=2 if pmis2==110
+replace pdea3=2 if pmis3==110
+replace pdea4=2 if pmis4==110
+replace pdea5=2 if pmis5==110
+replace pdea6=2 if pmis6==110
+replace pdea7=2 if pmis7==110
+replace pdea8=2 if pmis8==110
+replace pdea2=3 if pmis2==111
+label variable pdea1 "Number of death babies during Pregnancy 1 (Stillbirth, Miscarriage or Termination(P1))"
+label variable pdea2 "Number of death babies during Pregnancy 2 (Stillbirth, Miscarriage or Termination(P2))"
+label variable pdea3 "Number of death babies during Pregnancy 3 (Stillbirth, Miscarriage or Termination(P3))"
+label variable pdea4 "Number of death babies during Pregnancy 4 (Stillbirth, Miscarriage or Termination(P4))"
+label variable pdea5 "Number of death babies during Pregnancy 5 (Stillbirth, Miscarriage or Termination(P5))"
+label variable pdea6 "Number of death babies during Pregnancy 6 (Stillbirth, Miscarriage or Termination(P6))"
+label variable pdea7 "Number of death babies during Pregnancy 7 (Stillbirth, Miscarriage or Termination(P7))"
+label variable pdea8 "Number of death babies during Pregnancy 8 (Stillbirth, Miscarriage or Termination(P8))"
+/*
+tab pmis1 pdea1
+tab pmis2 pdea2
+tab pmis3 pdea3
+tab pmis4 pdea4
+tab pmis5 pdea5
+tab pmis6 pdea6
+tab pmis7 pdea7
+tab pmis8 pdea8
+*/
+
+gen pnum1=0
+gen pnum2=0
+gen pnum3=0
+gen pnum4=0
+gen pnum5=0
+gen pnum6=0
+gen pnum7=0
+gen pnum8=0
+label variable pnum1 "Number of Babies during Pregnancy 1(P1)"
+label variable pnum2 "Number of Babies during Pregnancy 2(P2)"
+label variable pnum3 "Number of Babies during Pregnancy 3(P3)"
+label variable pnum4 "Number of Babies during Pregnancy 4(P4)"
+label variable pnum5 "Number of Babies during Pregnancy 5(P5)"
+label variable pnum6 "Number of Babies during Pregnancy 6(P6)"
+label variable pnum7 "Number of Babies during Pregnancy 7(P7)"
+label variable pnum8 "Number of Babies during Pregnancy 8(P8)"
+
+/*
+tab b7preg11 b7preg12
+tab b7preg21 b7preg22
+tab b7preg31 b7preg32
+tab b7preg41 b7preg42
+tab b7preg61 b7preg62
+*/
+
+replace pnum1=1 if b7preg11==1 | b7preg11==2 | b7preg11==3 | b7preg11==4
+replace pnum2=1 if b7preg21==1 | b7preg21==2 | b7preg21==3 | b7preg21==4
+replace pnum3=1 if b7preg31==1 | b7preg31==2 | b7preg31==3 | b7preg31==4
+replace pnum4=1 if b7preg41==1 | b7preg41==2 | b7preg41==3 | b7preg41==4
+replace pnum5=1 if b7preg51==1 | b7preg51==2 | b7preg51==3 | b7preg51==4
+replace pnum6=1 if b7preg61==1 | b7preg61==2 | b7preg61==3 | b7preg61==4
+replace pnum7=1 if b7preg71==1 | b7preg71==2 | b7preg71==3 | b7preg71==4
+replace pnum8=1 if b7preg81==1 | b7preg81==2 | b7preg81==3 | b7preg81==4
+
+replace pnum1=2 if (b7preg11==1 | b7preg11==2 | b7preg11==3 | b7preg11==4) & (b7preg12==1 | b7preg12==2 | b7preg12==3 | b7preg12==4)
+replace pnum2=2 if (b7preg21==1 | b7preg21==2 | b7preg21==3 | b7preg21==4) & (b7preg22==1 | b7preg22==2 | b7preg22==3 | b7preg22==4)
+replace pnum3=2 if (b7preg31==1 | b7preg31==2 | b7preg31==3 | b7preg31==4) & (b7preg32==1 | b7preg32==2 | b7preg32==3 | b7preg32==4)
+
+replace pnum1=3 if (b7preg11==1 | b7preg11==2 | b7preg11==3 | b7preg11==4) & (b7preg12==1 | b7preg12==2 | b7preg12==3 | b7preg12==4) & (b7preg13==1 | b7preg13==2 | b7preg13==3 | b7preg13==4)
+replace pnum2=3 if (b7preg21==1 | b7preg21==2 | b7preg41==3 | b7preg21==4) & (b7preg22==1 | b7preg22==2 | b7preg22==3 | b7preg22==4) & (b7preg22==1 | b7preg23==2 | b7preg23==3 | b7preg23==4)
+
+/*
+gen dif= pnum1-pnbr1
+tab pnum1 pnbr1 if b7preg11==5
+tab b7prgcmc11 if b7preg11==5, m
+tab b7preg11 dif
+tab b8cmsex if b7preg11==-8 & dif==-1
+tab b7prgcmc11 if dif==-1, m
+tab b7prgcmc11 b7preg11 if dif==1, m
+*/
+
+gen pliv1=pnum1-pdea1
+gen pliv2=pnum2-pdea2
+gen pliv3=pnum3-pdea3
+gen pliv4=pnum4-pdea4
+gen pliv5=pnum5-pdea5
+gen pliv6=pnum6-pdea6
+gen pliv7=pnum7-pdea7
+gen pliv8=pnum8-pdea8
+label variable pliv1 "Number of Live Birth during Pregnancy 1(P1)"
+label variable pliv2 "Number of Live Birth during Pregnancy 2(P2)"
+label variable pliv3 "Number of Live Birth during Pregnancy 3(P3)"
+label variable pliv4 "Number of Live Birth during Pregnancy 4(P4)"
+label variable pliv5 "Number of Live Birth during Pregnancy 5(P5)"
+label variable pliv6 "Number of Live Birth during Pregnancy 6(P6)"
+label variable pliv7 "Number of Live Birth during Pregnancy 7(P7)"
+label variable pliv8 "Number of Live Birth during Pregnancy 8(P8)"
+
+gen pcmc1=b7prgcmc11 if b7preg11==1
+replace pcmc1=b7prgcmc12 if b7preg12==1 & pcmc1==.
+replace pcmc1=b7prgcmc13 if b7preg13==1 & pcmc1==.
+gen pcmc2=b7prgcmc21 if b7preg21==1
+replace pcmc2=b7prgcmc22 if b7preg22==1 & pcmc2==.
+replace pcmc2=b7prgcmc23 if b7preg23==1 & pcmc2==.
+gen pcmc3=b7prgcmc31 if b7preg31==1
+replace pcmc3=b7prgcmc32 if b7preg32==1 & pcmc3==.
+gen pcmc4=b7prgcmc41
+gen pcmc5=b7prgcmc51
+gen pcmc6=b7prgcmc61
+gen pcmc7=b7prgcmc71
+gen pcmc8=b7prgcmc81
+
+replace pcmc1=(b7prgcmc11+b7prgcmc12)/2 if pnum1==2 & pcmc1==.
+replace pcmc2=(b7prgcmc21+b7prgcmc22)/2 if pnum2==2 & pcmc2==.
+replace pcmc3=(b7prgcmc31+b7prgcmc32)/2 if pnum3==2 & pcmc3==.
+replace pcmc1=(b7prgcmc11+b7prgcmc12+b7prgcmc13)/3 if pnum1==3 & pcmc1==.
+replace pcmc2=(b7prgcmc21+b7prgcmc22+b7prgcmc23)/3 if pnum2==3 & pcmc2==.
+
+replace pcmc1=b7prgcmc11 if pcmc1==.
+replace pcmc1=b7prgcmc12 if pcmc1==.
+replace pcmc1=b7prgcmc13 if pcmc1==.
+replace pcmc2=b7prgcmc21 if pcmc2==.
+replace pcmc2=b7prgcmc22 if pcmc2==.
+replace pcmc2=b7prgcmc23 if pcmc2==.
+replace pcmc3=b7prgcmc31 if pcmc3==.
+replace pcmc3=b7prgcmc32 if pcmc3==.
+
+label variable pcmc1 "Date of Birth in CMC of Pregnancy 1(P1)"
+label variable pcmc2 "Date of Birth in CMC of Pregnancy 2(P2)"
+label variable pcmc3 "Date of Birth in CMC of Pregnancy 3(P3)"
+label variable pcmc4 "Date of Birth in CMC of Pregnancy 4(P4)"
+label variable pcmc5 "Date of Birth in CMC of Pregnancy 5(P5)"
+label variable pcmc6 "Date of Birth in CMC of Pregnancy 6(P6)"
+label variable pcmc7 "Date of Birth in CMC of Pregnancy 7(P7)"
+label variable pcmc8 "Date of Birth in CMC of Pregnancy 8(P8)"
+
+/*
+tab b7prgcmc11 b7prgcmc12
+tab b7prgcmc31 b7prgcmc32
+gen p1=b7prgcmc11-b7prgcmc12
+gen p2=b7prgcmc21-b7prgcmc22
+gen p3=b7prgcmc31-b7prgcmc32
+tab p1, m
+tab p2, m
+tab p3, m
+tab pcmc1 pnum1, m
+tab pcmc1 pdea1, m
+tab pcmc1 pliv1, m
+tab pliv1 pdea1 if pcmc1==.
+tab b7prgcmc12 if pcmc1==., m
+*/
+
+gen curp1=0
+gen curp2=0
+gen curp3=0
+gen curp4=0
+gen curp5=0
+gen curp6=0
+gen curp7=0
+gen curp8=0
+label variable curp1 "Current pregnant in Pregnancy 1 with x children(P1)"
+label variable curp2 "Current pregnant in Pregnancy 2 with x children(P2)"
+label variable curp3 "Current pregnant in Pregnancy 3 with x children(P3)"
+label variable curp4 "Current pregnant in Pregnancy 4 with x children(P4)"
+label variable curp5 "Current pregnant in Pregnancy 5 with x children(P5)"
+label variable curp6 "Current pregnant in Pregnancy 6 with x children(P6)"
+label variable curp7 "Current pregnant in Pregnancy 7 with x children(P7)"
+label variable curp8 "Current pregnant in Pregnancy 8 with x children(P8)"
+
+replace curp1=1 if b7preg11==5
+replace curp2=1 if b7preg21==5
+replace curp3=1 if b7preg31==5
+replace curp4=1 if b7preg41==5
+replace curp5=1 if b7preg51==5
+replace curp6=1 if b7preg61==5
+replace curp7=1 if b7preg71==5
+replace curp8=1 if b7preg81==5
+
+replace curp1=2 if b7preg11==5 & b7preg12==5
+replace curp2=2 if b7preg21==5 & b7preg22==5
+replace curp3=2 if b7preg31==5 & b7preg32==5
+
+replace curp1=3 if b7preg11==5 & b7preg12==5 & b7preg13==5
+replace curp2=3 if b7preg21==5 & b7preg22==5 & b7preg23==5
+
+keep bcsid sex pmis1-pmis8 pdea1-pdea8 pnum1-pnum8 pliv1-pliv8 pcmc1-pcmc8 curp1-curp8
+
+rename pmis1 pmis05_1
+rename pmis2 pmis05_2
+rename pmis3 pmis05_3
+rename pmis4 pmis05_4
+rename pmis5 pmis05_5
+rename pmis6 pmis05_6
+rename pmis7 pmis05_7
+rename pmis8 pmis05_8
+rename pdea1 pdea05_1
+rename pdea2 pdea05_2
+rename pdea3 pdea05_3
+rename pdea4 pdea05_4
+rename pdea5 pdea05_5
+rename pdea6 pdea05_6
+rename pdea7 pdea05_7
+rename pdea8 pdea05_8
+rename pnum1 pnum05_1
+rename pnum2 pnum05_2
+rename pnum3 pnum05_3
+rename pnum4 pnum05_4
+rename pnum5 pnum05_5
+rename pnum6 pnum05_6
+rename pnum7 pnum05_7
+rename pnum8 pnum05_8
+rename pliv1 pliv05_1
+rename pliv2 pliv05_2
+rename pliv3 pliv05_3
+rename pliv4 pliv05_4
+rename pliv5 pliv05_5
+rename pliv6 pliv05_6
+rename pliv7 pliv05_7
+rename pliv8 pliv05_8
+rename pcmc1 pcmc05_1
+rename pcmc2 pcmc05_2
+rename pcmc3 pcmc05_3
+rename pcmc4 pcmc05_4
+rename pcmc5 pcmc05_5
+rename pcmc6 pcmc05_6
+rename pcmc7 pcmc05_7
+rename pcmc8 pcmc05_8
+rename curp1 curp05_1
+rename curp2 curp05_2
+rename curp3 curp05_3
+rename curp4 curp05_4
+rename curp5 curp05_5
+rename curp6 curp05_6
+rename curp7 curp05_7
+rename curp8 curp05_8
+
+save "Pregnancy2005_wide", replace
+
+gen id=_n
+reshape long date event pliv05_ pcmc05_ pmis05_ pdea05_ pnum05_ curp05_, i(id)
+sort bcsid
+
+label variable curp05_ "Current pregnant in Pregnancy _j with x children(P_j)"
+label variable pcmc05_ "Date of Birth in CMC of Pregnancy _j(P_j)"
+label variable pliv05_ "Number of Live Birth during Pregnancy _j(P_j)"
+label variable pnum05_ "Number of Babies during Pregnancy _j(P8)"
+label variable pdea05_ "Number of death babies during Pregnancy _j (Stillbirth, Miscarriage or Termination(P_j))"
+label variable pmis05_ "Stillbirth, Miscarriage or Termination(P_j)"
+
+gsort +id +pcmc05_ -pnum05_ +_j /*ignore _j. beacuase it false*/
+
+save "Pregnancy2005_long", replace
+
+gen pyr=(pcmc05_/12)+1900
+replace pyr=. if pcmc==.
+replace pyr=1986 if pyr>=1986 & pyr<1987
+replace pyr=1987 if pyr>=1987 & pyr<1988
+replace pyr=1988 if pyr>=1988 & pyr<1989
+replace pyr=1989 if pyr>=1989 & pyr<1990
+replace pyr=1990 if pyr>=1990 & pyr<1991
+replace pyr=1991 if pyr>=1991 & pyr<1992
+replace pyr=1992 if pyr>=1992 & pyr<1993
+replace pyr=1993 if pyr>=1993 & pyr<1994
+replace pyr=1994 if pyr>=1994 & pyr<1995
+replace pyr=1995 if pyr>=1995 & pyr<1996
+replace pyr=1996 if pyr>=1996 & pyr<1997
+replace pyr=1997 if pyr>=1997 & pyr<1998
+replace pyr=1998 if pyr>=1998 & pyr<1999
+replace pyr=1999 if pyr>=1999 & pyr<2000
+replace pyr=2000 if pyr>=2000 & pyr<2001
+replace pyr=2001 if pyr>=2001 & pyr<2002
+replace pyr=2002 if pyr>=2002 & pyr<2003
+replace pyr=2003 if pyr>=2003 & pyr<2004
+replace pyr=2004 if pyr>=2004 & pyr<2005
+replace pyr=2005 if pyr>=2005 & pyr<2006
+replace pyr=2006 if pyr>=2006 & pyr<2007
+replace pyr=2007 if pyr>=2007 & pyr<2008
+replace pyr=2008 if pyr>=2008 & pyr<2009
+replace pyr=2009 if pyr>=2009 & pyr<2010
+replace pyr=2010 if pyr>=2010 & pyr<2011
+replace pyr=. if pyr<1980
+
+tab pyr 
+sum pyr 
+hist pyr, w(1) start(1982) d
+
+********************************************************************************
+
+/*5558-Twenty-Nine-Year Follow-Up, 1999-2000*/
+
+clear
+use "N:\British Cohort Study\UK_data\5558-Twenty-Nine-Year Follow-Up, 1999-2000\stata9_se\bcs2000.dta" 
+
+keep bcsid dmsex pregnum pregnum2 pregnum3 pregnum4 pregnum5 pregnum6 pregnum7 pregnum8 prega prega2 prega3 prega4 prega5 prega6 prega7 prega8 prega11 prega12 prega16 prega17 prega21 prega22 prega23 prega26 prega27 prega31 prega36 pregc pregc2 pregc3 pregc4 pregc5 pregc6 pregc7 pregc8 pregc11 pregc12 pregc16 pregc17 pregc21 pregc22 pregc23 pregc26 pregc27 pregc31 pregc36 pregey pregey2 pregey3 pregey4 pregey5 pregey6 pregey7 pregey8 pregey11 pregey12 pregey16 pregey17 pregey21 pregey22 pregey23 pregey26 pregey27 pregey31 pregey36 pregem pregem2 pregem3 pregem4 pregem5 pregem6 pregem7 pregem8 pregem11 pregem12 pregem16 pregem17 pregem21 pregem22 pregem23 pregem26 pregem27 pregem31 pregem36 wherkid wherkid2 wherkid3 wherkid4 wherkid5 wherkid6 wherkid7 wherkid8 wherki11 wherki12 wherki16 wherki17 wherki21 wherki22 wherki23 wherki26 wherki27 wherki31 wherki36 nump
+numlabel _all, add
+
+gen sex=dmsex
+label variable sex "Gender of Cohort Member"
+gen firstbirthyr=pregey
+tab firstbirthyr /*One Person (CM) is in the year 1967 pregnant. Taht is not possible, because they all are borne in the year 1970.*/
+replace firstbirthy=. if pregey<1968 | pregey>2001
+tab firstbirthy
+sum firstbirthy
+hist firstbirthy, w(1) start(1980)
+gen birth=1970
+gen numfstbirth=pregnum
+replace numfstbirth=. if pregnum<0 | pregnum==9
+gen failure=0
+replace failure=1 if numfstbirth!=.
+gen event=firstbirthy
+replace event=2001 if firstbirthy==.
+tab event failure
+stset event, failure(failure)origin(birth) id(bcsid)
+stptime, by(sex)
+sts graph, sur by (sex)
+/*Analysis Time = age of cohort member*/
+stptime
+sts graph
+
+g pregecmc=12*(pregey-1900)+pregem
+g pregecmc2=12*(pregey2-1900)+pregem2
+g pregecmc3=12*(pregey3-1900)+pregem3
+g pregecmc4=12*(pregey4-1900)+pregem4
+g pregecmc5=12*(pregey5-1900)+pregem5
+g pregecmc6=12*(pregey6-1900)+pregem6
+g pregecmc7=12*(pregey7-1900)+pregem7
+g pregecmc8=12*(pregey8-1900)+pregem8
+g pregecmc11=12*(pregey11-1900)+pregem11
+g pregecmc12=12*(pregey12-1900)+pregem12
+g pregecmc16=12*(pregey16-1900)+pregem16
+g pregecmc17=12*(pregey17-1900)+pregem17
+g pregecmc21=12*(pregey21-1900)+pregem21
+g pregecmc22=12*(pregey22-1900)+pregem22
+g pregecmc23=12*(pregey23-1900)+pregem23
+g pregecmc26=12*(pregey26-1900)+pregem26
+g pregecmc27=12*(pregey27-1900)+pregem27
+g pregecmc31=12*(pregey31-1900)+pregem31
+g pregecmc36=12*(pregey36-1900)+pregem36
+
+replace pregecmc=12*(pregey-1900)+6 if pregem==. | pregem>12
+replace pregecmc2=12*(pregey2-1900)+6 if pregem2==. | pregem2>12
+replace pregecmc3=12*(pregey3-1900)+6 if pregem3==. | pregem3>12
+replace pregecmc6=12*(pregey6-1900)+6 if pregem6==. | pregem6>12
+replace pregecmc7=12*(pregey7-1900)+6 if pregem7==. | pregem7>12
+replace pregecmc11=12*(pregey11-1900)+6 if pregem11==. | pregem11>12
+replace pregecmc12=12*(pregey12-1900)+6 if pregem12==. | pregem12>12
+replace pregecmc16=12*(pregey16-1900)+6 if pregem16==. | pregem16>12
+replace pregecmc17=12*(pregey17-1900)+6 if pregem17==. | pregem17>12
+replace pregecmc21=12*(pregey21-1900)+6 if pregem21==. | pregem21>12
+replace pregecmc22=12*(pregey22-1900)+6 if pregem22==. | pregem22>12
+replace pregecmc23=12*(pregey23-1900)+6 if pregem23==. | pregem23>12
+replace pregecmc26=12*(pregey26-1900)+6 if pregem26==. | pregem26>12
+replace pregecmc27=12*(pregey27-1900)+6 if pregem27==. | pregem27>12
+replace pregecmc31=12*(pregey31-1900)+6 if pregem31==. | pregem31>12
+replace pregecmc36=12*(pregey36-1900)+6 if pregem36==. | pregem36>12
+
+replace pregecmc=. if pregey>2001
+replace pregecmc2=. if pregey2>2001
+replace pregecmc3=. if pregey3>2001
+replace pregecmc4=. if pregey4>2001
+replace pregecmc5=. if pregey5>2001
+replace pregecmc6=. if pregey6>2001
+replace pregecmc7=. if pregey7>2001
+replace pregecmc8=. if pregey8>2001
+replace pregecmc11=. if pregey11>2001
+replace pregecmc12=. if pregey12>2001
+replace pregecmc16=. if pregey16>2001
+replace pregecmc17=. if pregey17>2001
+replace pregecmc21=. if pregey21>2001
+replace pregecmc22=. if pregey22>2001
+replace pregecmc23=. if pregey23>2001
+replace pregecmc26=. if pregey26>2001
+replace pregecmc27=. if pregey27>2001
+replace pregecmc31=. if pregey31>2001
+replace pregecmc36=. if pregey36>2001
+
+drop pregem pregem2 pregem3 pregem4 pregem5 pregem6 pregem7 pregem8 pregem11 pregem12 pregem16 pregem17 pregem21 pregem22 pregem23 pregem26 pregem27 pregem31 pregem36
+
+save "pregnancy2000", replace
+numlabel _all, add
+
+gen pmis1_00=.
+gen pmis2_00=.
+gen pmis3_00=.
+gen pmis4_00=.
+gen pmis5_00=.
+gen pmis6_00=.
+gen pmis7_00=.
+gen pmis8_00=.
+label variable pmis1_00 "Stillbirth, Miscarriage or Termination(P1)"
+label variable pmis2_00 "Stillbirth, Miscarriage or Termination(P2)"
+label variable pmis3_00 "Stillbirth, Miscarriage or Termination(P3)"
+label variable pmis4_00 "Stillbirth, Miscarriage or Termination(P4)"
+label variable pmis5_00 "Stillbirth, Miscarriage or Termination(P5)"
+label variable pmis6_00 "Stillbirth, Miscarriage or Termination(P6)"
+label variable pmis7_00 "Stillbirth, Miscarriage or Termination(P7)"
+label variable pmis8_00 "Stillbirth, Miscarriage or Termination(P8)"
+
+replace pmis1_00=100 if (prega==2 | prega==3 | prega==4)
+replace pmis2_00=100 if (prega6==2 | prega6==3 | prega6==4)
+replace pmis3_00=100 if (prega11==2 | prega11==3 | prega11==4)
+replace pmis4_00=100 if (prega16==2 | prega16==3 | prega16==4)
+replace pmis5_00=100 if (prega21==2 | prega21==3 | prega21==4)
+replace pmis6_00=100 if (prega26==2 | prega26==3 | prega26==4)
+replace pmis7_00=100 if (prega31==2 | prega31==3 | prega31==4)
+replace pmis8_00=100 if (prega36==2 | prega36==3 | prega36==4)
+
+replace pmis1_00=010 if (prega2==2 | prega2==3 | prega2==4)
+replace pmis2_00=010 if (prega7==2 | prega7==3 | prega7==4)
+replace pmis3_00=010 if (prega12==2 | prega12==3 | prega12==4)
+replace pmis4_00=010 if (prega17==2 | prega17==3 | prega17==4)
+replace pmis5_00=010 if (prega22==2 | prega22==3 | prega22==4)
+replace pmis6_00=010 if (prega27==2 | prega27==3 | prega27==4)
+
+replace pmis1_00=001 if (prega3==2 | prega3==3 | prega3==4)
+replace pmis5_00=001 if (prega23==2 | prega23==3 | prega23==4)
+
+replace pmis1_00=110 if (prega==2 | prega==3 | prega==4) & (prega2==2 | prega2==3 | prega2==4)
+replace pmis2_00=110 if (prega6==2 | prega6==3 | prega6==4) & (prega7==2 | prega7==3 | prega7==4)
+replace pmis3_00=110 if (prega11==2 | prega11==3 | prega11==4) & (prega12==2 | prega12==3 | prega12==4)
+replace pmis4_00=110 if (prega16==2 | prega16==3 | prega16==4) & (prega17==2 | prega17==3 | prega17==4)
+replace pmis5_00=110 if (prega21==2 | prega21==3 | prega21==4) & (prega22==2 | prega22==3 | prega22==4)
+replace pmis6_00=110 if (prega26==2 | prega26==3 | prega26==4) & (prega27==2 | prega27==3 | prega27==4)
+
+replace pmis1_00=101 if (prega==2 | prega==3 | prega==4) & (prega3==2 | prega3==3 | prega3==4)
+replace pmis5_00=101 if (prega21==2 | prega21==3 | prega21==4) & (prega23==2 | prega23==3 | prega23==4)
+
+replace pmis1_00=011 if (prega2==2 | prega2==3 | prega2==4) & (prega3==2 | prega3==3 | prega3==4)
+replace pmis5_00=011 if (prega22==2 | prega22==3 | prega22==4) & (prega23==2 | prega23==3 | prega23==4)
+
+replace pmis1_00=111 if (prega==2 | prega==3 | prega==4) & (prega2==2 | prega2==3 | prega2==4) & (prega3==2 | prega3==3 | prega3==4)
+replace pmis5_00=111 if (prega21==2 | prega21==3 | prega21==4) & (prega22==2 | prega22==3 | prega22==4) & (prega23==2 | prega23==3 | prega23==4)
+
+label de pmis 010"Second Child" 100"only first Child" 110"First & Second Child" 333"All 4 Children"
+label values pmis1_00 pmis
+label values pmis2_00 pmis
+label values pmis3_00 pmis
+label values pmis4_00 pmis
+label values pmis5_00 pmis
+label values pmis6_00 pmis
+label values pmis7_00 pmis
+label values pmis8_00 pmis
+
+gen pdea1_00=0
+gen pdea2_00=0
+gen pdea3_00=0
+gen pdea4_00=0
+gen pdea5_00=0
+gen pdea6_00=0
+gen pdea7_00=0
+gen pdea8_00=0
+replace pdea1_00=1 if pmis1_00==100 | pmis1_00==010 | pmis1_00==001
+replace pdea2_00=1 if pmis2_00==100 | pmis2_00==010
+replace pdea3_00=1 if pmis3_00==100 | pmis3_00==010
+replace pdea4_00=1 if pmis4_00==100 | pmis4_00==010
+replace pdea5_00=1 if pmis5_00==100 | pmis5_00==010 | pmis5_00==001
+replace pdea6_00=1 if pmis6_00==100 | pmis6_00==010
+replace pdea7_00=1 if pmis7_00==100 | pmis7_00==010
+replace pdea8_00=1 if pmis8_00==100 | pmis8_00==010
+replace pdea1_00=2 if pmis1_00==110 | pmis1_00==101 | pmis1_00==011
+replace pdea2_00=2 if pmis2_00==110
+replace pdea3_00=2 if pmis3_00==110
+replace pdea4_00=2 if pmis4_00==110
+replace pdea5_00=2 if pmis5_00==110 | pmis5_00==101 | pmis5_00==011
+replace pdea6_00=2 if pmis6_00==110
+replace pdea7_00=2 if pmis7_00==110
+replace pdea8_00=2 if pmis8_00==110
+replace pdea5_00=3 if pmis5_00==111
+label variable pdea1_00 "Number of death babies during Pregnancy 1 (Stillbirth, Miscarriage or Termination(P1))"
+label variable pdea2_00 "Number of death babies during Pregnancy 2 (Stillbirth, Miscarriage or Termination(P2))"
+label variable pdea3_00 "Number of death babies during Pregnancy 3 (Stillbirth, Miscarriage or Termination(P3))"
+label variable pdea4_00 "Number of death babies during Pregnancy 4 (Stillbirth, Miscarriage or Termination(P4))"
+label variable pdea5_00 "Number of death babies during Pregnancy 5 (Stillbirth, Miscarriage or Termination(P5))"
+label variable pdea6_00 "Number of death babies during Pregnancy 6 (Stillbirth, Miscarriage or Termination(P6))"
+label variable pdea7_00 "Number of death babies during Pregnancy 7 (Stillbirth, Miscarriage or Termination(P7))"
+label variable pdea8_00 "Number of death babies during Pregnancy 8 (Stillbirth, Miscarriage or Termination(P8))"
+/*
+tab pmis1_00 pdea1_00
+tab pmis2_00 pdea2_00
+tab pmis3_00 pdea3_00
+tab pmis4_00 pdea4_00
+tab pmis5_00 pdea5_00
+tab pmis6_00 pdea6_00
+tab pmis7_00 pdea7_00
+tab pmis8_00 pdea8_00
+*/
+
+gen pnum1_00=0
+gen pnum2_00=0
+gen pnum3_00=0
+gen pnum4_00=0
+gen pnum5_00=0
+gen pnum6_00=0
+gen pnum7_00=0
+gen pnum8_00=0
+label variable pnum1_00 "Number of Babies during Pregnancy 1(P1)"
+label variable pnum2_00 "Number of Babies during Pregnancy 2(P2)"
+label variable pnum3_00 "Number of Babies during Pregnancy 3(P3)"
+label variable pnum4_00 "Number of Babies during Pregnancy 4(P4)"
+label variable pnum5_00 "Number of Babies during Pregnancy 5(P5)"
+label variable pnum6_00 "Number of Babies during Pregnancy 6(P6)"
+label variable pnum7_00 "Number of Babies during Pregnancy 7(P7)"
+label variable pnum8_00 "Number of Babies during Pregnancy 8(P8)"
+
+/*
+tab b8preg11 b8preg12
+tab b8preg21 b8preg22
+tab b8preg31 b8preg32
+tab b8preg41 b8preg42
+tab b8preg61 b8preg62
+*/
+
+replace pnum1_00=1 if prega==1 | prega==2 | prega==3 | prega==4
+replace pnum2_00=1 if prega6==1 | prega6==2 | prega6==3 | prega6==4
+replace pnum3_00=1 if prega11==1 | prega11==2 | prega11==3 | prega11==4
+replace pnum4_00=1 if prega16==1 | prega16==2 | prega16==3 | prega16==4
+replace pnum5_00=1 if prega21==1 | prega21==2 | prega21==3 | prega21==4
+replace pnum6_00=1 if prega26==1 | prega26==2 | prega26==3 | prega26==4
+replace pnum7_00=1 if prega31==1 | prega31==2 | prega31==3 | prega31==4
+replace pnum8_00=1 if prega36==1 | prega36==2 | prega36==3 | prega36==4
+
+replace pnum1_00=2 if (prega==1 | prega==2 | prega==3 | prega==4) & (prega2==1 | prega2==2 | prega2==3 | prega2==4)
+replace pnum2_00=2 if (prega6==1 | prega6==2 | prega6==3 | prega6==4) & (prega7==1 | prega7==2 | prega7==3 | prega==4)
+replace pnum3_00=2 if (prega11==1 | prega11==2 | prega11==3 | prega11==4) & (prega12==1 | prega12==2 | prega12==3 | prega12==4)
+replace pnum4_00=2 if (prega16==1 | prega16==2 | prega16==3 | prega16==4) & (prega17==1 | prega17==2 | prega17==3 | prega17==4)
+replace pnum5_00=2 if (prega21==1 | prega21==2 | prega21==3 | prega21==4) & (prega22==1 | prega22==2 | prega22==3 | prega22==4)
+replace pnum6_00=2 if (prega26==1 | prega26==2 | prega26==3 | prega26==4) & (prega27==1 | prega27==2 | prega27==3 | prega27==4)
+
+
+replace pnum1_00=3 if (prega==1 | prega==2 | prega==3 | prega==4) & (prega2==1 | prega2==2 | prega2==3 | prega2==4) & (prega3==1 | prega3==2 | prega3==3 | prega3==4)
+replace pnum4_00=3 if (prega21==1 | prega21==2 | prega21==3 | prega21==4) & (prega22==1 | prega22==2 | prega22==3 | prega22==4) & (prega23==1 | prega23==2 | prega23==3 | prega23==4)
+
+gen pliv1_00=pnum1_00-pdea1_00
+gen pliv2_00=pnum2_00-pdea2_00
+gen pliv3_00=pnum3_00-pdea3_00
+gen pliv4_00=pnum4_00-pdea4_00
+gen pliv5_00=pnum5_00-pdea5_00
+gen pliv6_00=pnum6_00-pdea6_00
+gen pliv7_00=pnum7_00-pdea7_00
+gen pliv8_00=pnum8_00-pdea8_00
+label variable pliv1_00 "Number of Live Birth during Pregnancy 1(P1)"
+label variable pliv2_00 "Number of Live Birth during Pregnancy 2(P2)"
+label variable pliv3_00 "Number of Live Birth during Pregnancy 3(P3)"
+label variable pliv4_00 "Number of Live Birth during Pregnancy 4(P4)"
+label variable pliv5_00 "Number of Live Birth during Pregnancy 5(P5)"
+label variable pliv6_00 "Number of Live Birth during Pregnancy 6(P6)"
+label variable pliv7_00 "Number of Live Birth during Pregnancy 7(P7)"
+label variable pliv8_00 "Number of Live Birth during Pregnancy 8(P8)"
+
+gen pcmc1_00=pregecmc if prega==1
+replace pcmc1_00=pregecmc2 if prega2==1 & pcmc1_00==.
+replace pcmc1_00=pregecmc3 if prega3==1 & pcmc1_00==.
+gen pcmc2_00=pregecmc6 if prega6==1
+replace pcmc2_00=pregecmc7 if prega7==1 & pcmc2_00==.
+gen pcmc3_00=pregecmc11 if prega11==1
+replace pcmc3_00=pregecmc12 if prega12==1 & pcmc3_00==.
+gen pcmc4_00=pregecmc16 if prega16==1
+replace pcmc4_00=pregecmc17 if prega17==1 & pcmc4_00==.
+gen pcmc5_00=pregecmc21 if prega21==1
+replace pcmc5_00=pregecmc22 if prega22==1 & pcmc5_00==.
+replace pcmc5_00=pregecmc23 if prega23==1 & pcmc5_00==.
+gen pcmc6_00=pregecmc26 if prega26==1
+replace pcmc6_00=pregecmc27 if prega27==1 & pcmc6_00==.
+gen pcmc7_00=pregecmc31
+gen pcmc8_00=pregecmc36
+
+replace pcmc1_00=(pregecmc+pregecmc2)/2 if pnum1_00==2 & pcmc1_00==.
+replace pcmc2_00=(pregecmc6+pregecmc7)/2 if pnum2_00==2 & pcmc2_00==.
+replace pcmc3_00=(pregecmc11+pregecmc12)/2 if pnum3_00==2 & pcmc3_00==.
+replace pcmc4_00=(pregecmc16+pregecmc17)/2 if pnum4_00==2 & pcmc4_00==.
+replace pcmc5_00=(pregecmc21+pregecmc22)/2 if pnum5_00==2 & pcmc5_00==.
+replace pcmc6_00=(pregecmc26+pregecmc27)/2 if pnum6_00==2 & pcmc6_00==.
+replace pcmc1_00=(pregecmc+pregecmc2+pregecmc3)/3 if pnum1_00==3 & pcmc1_00==.
+replace pcmc5_00=(pregecmc21+pregecmc22+pregecmc23)/3 if pnum5_00==3 & pcmc5_00==.
+
+replace pcmc1_00=pregecmc if pcmc1_00==.
+replace pcmc1_00=pregecmc2 if pcmc1_00==.
+replace pcmc1_00=pregecmc3 if pcmc1_00==.
+replace pcmc2_00=pregecmc6 if pcmc2_00==.
+replace pcmc2_00=pregecmc7 if pcmc2_00==.
+replace pcmc3_00=pregecmc11 if pcmc3_00==.
+replace pcmc3_00=pregecmc12 if pcmc3_00==.
+replace pcmc4_00=pregecmc16 if pcmc4_00==.
+replace pcmc4_00=pregecmc17 if pcmc4_00==.
+replace pcmc5_00=pregecmc21 if pcmc5_00==.
+replace pcmc5_00=pregecmc22 if pcmc5_00==.
+replace pcmc5_00=pregecmc23 if pcmc5_00==.
+replace pcmc6_00=pregecmc26 if pcmc6_00==.
+replace pcmc6_00=pregecmc27 if pcmc6_00==.
+
+label variable pcmc1_00 "Date of Birth in CMC of Pregnancy 1(P1)"
+label variable pcmc2_00 "Date of Birth in CMC of Pregnancy 2(P2)"
+label variable pcmc3_00 "Date of Birth in CMC of Pregnancy 3(P3)"
+label variable pcmc4_00 "Date of Birth in CMC of Pregnancy 4(P4)"
+label variable pcmc5_00 "Date of Birth in CMC of Pregnancy 5(P5)"
+label variable pcmc6_00 "Date of Birth in CMC of Pregnancy 6(P6)"
+label variable pcmc7_00 "Date of Birth in CMC of Pregnancy 7(P7)"
+label variable pcmc8_00 "Date of Birth in CMC of Pregnancy 8(P8)"
+
+/*
+gen p1=pregecmc-pregecmc2
+gen p2=pregecmc6-pregecmc7
+gen p3=pregecmc11-pregecmc12
+tab p1 prega
+tab p2 prega6
+tab p3 prega11
+tab p1 prega2
+tab p2 prega7
+tab p3 prega12
+tab pcmc1_00 pnum1_00, m
+tab pcmc1_00 pdea1_00, m
+tab pcmc1_00 pliv1_00, m
+tab pliv1_00 pdea1_00 if pcmc1_00==.
+tab pregecmc2 if pcmc1_00==., m
+*/
+
+gen curp1_00=0
+gen curp2_00=0
+gen curp3_00=0
+gen curp4_00=0
+gen curp5_00=0
+gen curp6_00=0
+gen curp7_00=0
+gen curp8_00=0
+label variable curp1_00 "Current pregnant in Pregnancy 1 with x children(P1)"
+label variable curp2_00 "Current pregnant in Pregnancy 2 with x children(P2)"
+label variable curp3_00 "Current pregnant in Pregnancy 3 with x children(P3)"
+label variable curp4_00 "Current pregnant in Pregnancy 4 with x children(P4)"
+label variable curp5_00 "Current pregnant in Pregnancy 5 with x children(P5)"
+label variable curp6_00 "Current pregnant in Pregnancy 6 with x children(P6)"
+label variable curp7_00 "Current pregnant in Pregnancy 7 with x children(P7)"
+label variable curp8_00 "Current pregnant in Pregnancy 8 with x children(P8)"
+
+replace curp1_00=1 if prega==5
+replace curp2_00=1 if prega6==5
+replace curp3_00=1 if prega11==5
+replace curp4_00=1 if prega16==5
+replace curp5_00=1 if prega21==5
+replace curp6_00=1 if prega26==5
+replace curp7_00=1 if prega31==5
+replace curp8_00=1 if prega36==5
+
+replace curp1_00=2 if prega==5 & prega2==5
+replace curp2_00=2 if prega6==5 & prega7==5
+replace curp3_00=2 if prega11==5 & prega12==5
+replace curp4_00=2 if prega16==5 & prega17==5
+replace curp5_00=2 if prega21==5 & prega22==5
+replace curp6_00=2 if prega26==5 & prega27==5
+
+replace curp1_00=3 if prega==5 & prega2==5 & prega3==5
+replace curp5_00=3 if prega21==5 & prega22==5 & prega23==5
+
+keep bcsid dmsex pmis1_00-pmis8_00 pdea1_00-pdea8_00 pnum1_00-pnum8_00 pliv1_00-pliv8_00 pcmc1_00-pcmc8_00 curp1_00-curp8_00
+
+rename pmis1_00 pmis00_1
+rename pmis2_00 pmis00_2
+rename pmis3_00 pmis00_3
+rename pmis4_00 pmis00_4
+rename pmis5_00 pmis00_5
+rename pmis6_00 pmis00_6
+rename pmis7_00 pmis00_7
+rename pmis8_00 pmis00_8
+rename pdea1_00 pdea00_1
+rename pdea2_00 pdea00_2
+rename pdea3_00 pdea00_3
+rename pdea4_00 pdea00_4
+rename pdea5_00 pdea00_5
+rename pdea6_00 pdea00_6
+rename pdea7_00 pdea00_7
+rename pdea8_00 pdea00_8
+rename pnum1_00 pnum00_1
+rename pnum2_00 pnum00_2
+rename pnum3_00 pnum00_3
+rename pnum4_00 pnum00_4
+rename pnum5_00 pnum00_5
+rename pnum6_00 pnum00_6
+rename pnum7_00 pnum00_7
+rename pnum8_00 pnum00_8
+rename pliv1_00 pliv00_1
+rename pliv2_00 pliv00_2
+rename pliv3_00 pliv00_3
+rename pliv4_00 pliv00_4
+rename pliv5_00 pliv00_5
+rename pliv6_00 pliv00_6
+rename pliv7_00 pliv00_7
+rename pliv8_00 pliv00_8
+rename pcmc1_00 pcmc00_1
+rename pcmc2_00 pcmc00_2
+rename pcmc3_00 pcmc00_3
+rename pcmc4_00 pcmc00_4
+rename pcmc5_00 pcmc00_5
+rename pcmc6_00 pcmc00_6
+rename pcmc7_00 pcmc00_7
+rename pcmc8_00 pcmc00_8
+rename curp1_00 curp00_1
+rename curp2_00 curp00_2
+rename curp3_00 curp00_3
+rename curp4_00 curp00_4
+rename curp5_00 curp00_5
+rename curp6_00 curp00_6
+rename curp7_00 curp00_7
+rename curp8_00 curp00_8
+
+save "Pregnancy2000_wide", replace
+
+gen id=_n
+reshape long date event pliv00_ pcmc00_ pmis00_ pdea00_ pnum00_ curp00_, i(id)
+sort bcsid
+
+label variable curp00_ "Current pregnant in Pregnancy _j with x children(P_j)"
+label variable pcmc00_ "Date of Birth in CMC of Pregnancy _j(P_j)"
+label variable pliv00_ "Number of Live Birth during Pregnancy _j(P_j)"
+label variable pnum00_ "Number of Babies during Pregnancy _j(P8)"
+label variable pdea00_ "Number of death babies during Pregnancy _j (Stillbirth, Miscarriage or Termination(P_j))"
+label variable pmis00_ "Stillbirth, Miscarriage or Termination(P_j)"
+
+gsort +id +pcmc00_ -pnum00_ +_j /*ignore _j. beacuase it false*/
+
+save "Pregnancy2000_long", replace
+
+clear
+use "Pregnancy2000_long"
+
+gen pyr=(pcmc00_/12)+1900
+replace pyr=. if pcmc==.
+replace pyr=1986 if pyr>=1986 & pyr<1987
+replace pyr=1987 if pyr>=1987 & pyr<1988
+replace pyr=1988 if pyr>=1988 & pyr<1989
+replace pyr=1989 if pyr>=1989 & pyr<1990
+replace pyr=1990 if pyr>=1990 & pyr<1991
+replace pyr=1991 if pyr>=1991 & pyr<1992
+replace pyr=1992 if pyr>=1992 & pyr<1993
+replace pyr=1993 if pyr>=1993 & pyr<1994
+replace pyr=1994 if pyr>=1994 & pyr<1995
+replace pyr=1995 if pyr>=1995 & pyr<1996
+replace pyr=1996 if pyr>=1996 & pyr<1997
+replace pyr=1997 if pyr>=1997 & pyr<1998
+replace pyr=1998 if pyr>=1998 & pyr<1999
+replace pyr=1999 if pyr>=1999 & pyr<2000
+replace pyr=2000 if pyr>=2000 & pyr<2001
+replace pyr=2001 if pyr>=2001 & pyr<2002
+replace pyr=2002 if pyr>=2002 & pyr<2003
+replace pyr=2003 if pyr>=2003 & pyr<2004
+replace pyr=2004 if pyr>=2004 & pyr<2005
+replace pyr=2005 if pyr>=2005 & pyr<2006
+replace pyr=2006 if pyr>=2006 & pyr<2007
+replace pyr=2007 if pyr>=2007 & pyr<2008
+replace pyr=2008 if pyr>=2008 & pyr<2009
+replace pyr=2009 if pyr>=2009 & pyr<2010
+replace pyr=2010 if pyr>=2010 & pyr<2011
+replace pyr=. if pyr<1980
+
+tab pyr 
+sum pyr 
+hist pyr, w(1) start(1980) d
+
+********************************************************************************
+
+/*Generate Pregnancy-Dataset over all waves*/
+
+clear 
+use "Pregnancy2008_wide"
+
+merge 1:1 bcsid using "Pregnancy2005_wide"
+rename _merge merge_08_05
+tab merge_08_05
+
+merge 1:1 bcsid using "Pregnancy2000_wide"
+rename _merge merge_08_05_00
+tab merge_08_05_00
+
+rename pmis00_1 pmis1
+rename pmis00_2 pmis2
+rename pmis00_3 pmis3
+rename pmis00_4 pmis4
+rename pmis00_5 pmis5
+rename pmis00_6 pmis6
+rename pmis00_7 pmis7
+rename pmis00_8 pmis8
+rename pmis05_1 pmis9
+rename pmis05_2 pmis10
+rename pmis05_3 pmis11
+rename pmis05_4 pmis12
+rename pmis05_5 pmis13
+rename pmis05_6 pmis14
+rename pmis05_7 pmis15
+rename pmis05_8 pmis16
+rename pmis08_1 pmis17
+rename pmis08_2 pmis18
+rename pmis08_3 pmis19
+rename pmis08_4 pmis20
+rename pmis08_5 pmis21
+rename pmis08_6 pmis22
+rename pmis08_7 pmis23
+rename pmis08_8 pmis24
+
+rename pdea00_1 pdea1
+rename pdea00_2 pdea2
+rename pdea00_3 pdea3
+rename pdea00_4 pdea4
+rename pdea00_5 pdea5
+rename pdea00_6 pdea6
+rename pdea00_7 pdea7
+rename pdea00_8 pdea8
+rename pdea05_1 pdea9
+rename pdea05_2 pdea10
+rename pdea05_3 pdea11
+rename pdea05_4 pdea12
+rename pdea05_5 pdea13
+rename pdea05_6 pdea14
+rename pdea05_7 pdea15
+rename pdea05_8 pdea16
+rename pdea08_1 pdea17
+rename pdea08_2 pdea18
+rename pdea08_3 pdea19
+rename pdea08_4 pdea20
+rename pdea08_5 pdea21
+rename pdea08_6 pdea22
+rename pdea08_7 pdea23
+rename pdea08_8 pdea24
+
+rename pnum00_1 pnum1
+rename pnum00_2 pnum2
+rename pnum00_3 pnum3
+rename pnum00_4 pnum4
+rename pnum00_5 pnum5
+rename pnum00_6 pnum6
+rename pnum00_7 pnum7
+rename pnum00_8 pnum8
+rename pnum05_1 pnum9
+rename pnum05_2 pnum10
+rename pnum05_3 pnum11
+rename pnum05_4 pnum12
+rename pnum05_5 pnum13
+rename pnum05_6 pnum14
+rename pnum05_7 pnum15
+rename pnum05_8 pnum16
+rename pnum08_1 pnum17
+rename pnum08_2 pnum18
+rename pnum08_3 pnum19
+rename pnum08_4 pnum20
+rename pnum08_5 pnum21
+rename pnum08_6 pnum22
+rename pnum08_7 pnum23
+rename pnum08_8 pnum24
+
+rename pliv00_1 pliv1
+rename pliv00_2 pliv2
+rename pliv00_3 pliv3
+rename pliv00_4 pliv4
+rename pliv00_5 pliv5
+rename pliv00_6 pliv6
+rename pliv00_7 pliv7
+rename pliv00_8 pliv8
+rename pliv05_1 pliv9
+rename pliv05_2 pliv10
+rename pliv05_3 pliv11
+rename pliv05_4 pliv12
+rename pliv05_5 pliv13
+rename pliv05_6 pliv14
+rename pliv05_7 pliv15
+rename pliv05_8 pliv16
+rename pliv08_1 pliv17
+rename pliv08_2 pliv18
+rename pliv08_3 pliv19
+rename pliv08_4 pliv20
+rename pliv08_5 pliv21
+rename pliv08_6 pliv22
+rename pliv08_7 pliv23
+rename pliv08_8 pliv24
+
+rename pcmc00_1 pcmc1
+rename pcmc00_2 pcmc2
+rename pcmc00_3 pcmc3
+rename pcmc00_4 pcmc4
+rename pcmc00_5 pcmc5
+rename pcmc00_6 pcmc6
+rename pcmc00_7 pcmc7
+rename pcmc00_8 pcmc8
+rename pcmc05_1 pcmc9
+rename pcmc05_2 pcmc10
+rename pcmc05_3 pcmc11
+rename pcmc05_4 pcmc12
+rename pcmc05_5 pcmc13
+rename pcmc05_6 pcmc14
+rename pcmc05_7 pcmc15
+rename pcmc05_8 pcmc16
+rename pcmc08_1 pcmc17
+rename pcmc08_2 pcmc18
+rename pcmc08_3 pcmc19
+rename pcmc08_4 pcmc20
+rename pcmc08_5 pcmc21
+rename pcmc08_6 pcmc22
+rename pcmc08_7 pcmc23
+rename pcmc08_8 pcmc24
+
+rename curp00_1 curp1
+rename curp00_2 curp2
+rename curp00_3 curp3
+rename curp00_4 curp4
+rename curp00_5 curp5
+rename curp00_6 curp6
+rename curp00_7 curp7
+rename curp00_8 curp8
+rename curp05_1 curp9
+rename curp05_2 curp10
+rename curp05_3 curp11
+rename curp05_4 curp12
+rename curp05_5 curp13
+rename curp05_6 curp14
+rename curp05_7 curp15
+rename curp05_8 curp16
+rename curp08_1 curp17
+rename curp08_2 curp18
+rename curp08_3 curp19
+rename curp08_4 curp20
+rename curp08_5 curp21
+rename curp08_6 curp22
+rename curp08_7 curp23
+rename curp08_8 curp24
+
+save "Pregnancy_wide", replace
+
+gen id=_n
+reshape long date event pliv pcmc pmis pdea pnum curp, i(id)
+sort bcsid
+
+label variable curp "Current pregnant in Pregnancy _j with x children(P_j)"
+label variable pcmc "Date of Birth in CMC of Pregnancy _j(P_j)"
+label variable pliv "Number of Live Birth during Pregnancy _j(P_j)"
+label variable pnum "Number of Babies during Pregnancy _j(P8)"
+label variable pdea "Number of death babies during Pregnancy _j (Stillbirth, Miscarriage or Termination(P_j))"
+label variable pmis "Stillbirth, Miscarriage or Termination(P_j)"
+
+gsort +id +pcmc -pnum +_j /*ignore _j. beacuase it false*/
+
+gen wave=.
+replace wave=1 if _j>0 & _j<9
+replace wave=2 if _j>8 & _j<17
+replace wave=3 if _j>16 & _j<25
+label de wave 1"1999-2000" 2"2004-2005" 3"2008-2009", modify
+label values wave wave
+
+replace sex=dmsex if sex==.
+drop dmsex date event
+numlabel _all, add
+egen j=fill(1 2 to 24 1 2 to 24)
+
+save "Pregnancy_long", replace
+
+clear
+use "Pregnancy_long"
+
+/*
+drop if pcmc==.
+*/
+gen lagid=id[_n+1]
+gen lagcmc=pcmc[_n+1]
+gen difid=lagid-id
+gen difcmc=lagcmc-pcmc
+gen lagmis=pmis[_n+1]
+gen dif=.
+/*replace dif=2 if difcmc<7 & difid==0 & (pmis!=. | lagmis!=.)*/
+replace dif=1 if difcmc<6 & difid==0 & pmis==. & lagmis==.
+replace dif=0 if difcmc>5 | difid!=0 | pmis!=. | lagmis!=.
+tab dif, m
+gen lagdif=dif[_n-1]
+gen lagwave=wave[_n+1]
+/*
+keep if dif==1
+*/
+replace pcmc=. if lagdif==1
+replace pnum=0 if lagdif==1
+replace pliv=0 if lagdif==1
+replace pdea=0 if lagdif==1
+/*
+All Pregnancys are deleted if the Pregnancys are not at least 5 month apart
+Always the subsequent event is deleted
+*/
+
+drop lagid lagcmc difid difcmc lagmis lagdif lagwave
+
+save "Pregnancy_long", replace
+
+clear
+use "Pregnancy_long"
+
+gen pyr=(pcmc/12)+1900
+replace pyr=. if pcmc==.
+replace pyr=1986 if pyr>=1986 & pyr<1987
+replace pyr=1987 if pyr>=1987 & pyr<1988
+replace pyr=1988 if pyr>=1988 & pyr<1989
+replace pyr=1989 if pyr>=1989 & pyr<1990
+replace pyr=1990 if pyr>=1990 & pyr<1991
+replace pyr=1991 if pyr>=1991 & pyr<1992
+replace pyr=1992 if pyr>=1992 & pyr<1993
+replace pyr=1993 if pyr>=1993 & pyr<1994
+replace pyr=1994 if pyr>=1994 & pyr<1995
+replace pyr=1995 if pyr>=1995 & pyr<1996
+replace pyr=1996 if pyr>=1996 & pyr<1997
+replace pyr=1997 if pyr>=1997 & pyr<1998
+replace pyr=1998 if pyr>=1998 & pyr<1999
+replace pyr=1999 if pyr>=1999 & pyr<2000
+replace pyr=2000 if pyr>=2000 & pyr<2001
+replace pyr=2001 if pyr>=2001 & pyr<2002
+replace pyr=2002 if pyr>=2002 & pyr<2003
+replace pyr=2003 if pyr>=2003 & pyr<2004
+replace pyr=2004 if pyr>=2004 & pyr<2005
+replace pyr=2005 if pyr>=2005 & pyr<2006
+replace pyr=2006 if pyr>=2006 & pyr<2007
+replace pyr=2007 if pyr>=2007 & pyr<2008
+replace pyr=2008 if pyr>=2008 & pyr<2009
+replace pyr=2009 if pyr>=2009 & pyr<2010
+replace pyr=2010 if pyr>=2010 & pyr<2011
+replace pyr=. if pyr<1980
+
+tab pyr, m
+sum pyr 
+hist pyr, w(1) start(1980) d
+
+********************************************************************************
+********************************************************************************
+
+/*
+
+*1996
+
+clear
+use "N:\British Cohort Study\UK_data\3833-Twenty-Six-Year Follow-Up, 1996\stata9\bcs96x.dta" 
+
+keep bcsid b960333 b960334 b960340-b960415 ageych ageych2 depchild eldest eldest2 ownkid adopkid fostkid stepkid numkids
+
+*1992
+
+clear
+use "N:\British Cohort Study\UK_data\4715-Twenty-One-Year Sample Survey, 1992\stata8\bcs21yearsample.dta" 
+
+keep bcsid agekid1a kid1a kid2a kid3a parent_t vc97 - vc97d9 vc107a - vc107b5c vc108a - vc109
+
+*1986
+
+clear
+use "N:\British Cohort Study\UK_data\3535-Sixteen-Year Follow-Up, 1986\stata9_se\bcs7016x.dta" 
+
+keep bcsid
+
+*2012
+
+/*
+*bcs70_2012_flatfile
+
+clear
+use "N:\British Cohort Study\UK_data\7473-Forty-Two-Year Follow-Up, 2012\stata11\bcs70_2012_flatfile.dta" 
+
+keep BCSID B9CHINTR - B9MCHCHK B9CURPRG B9FERCON B9FERCN B9FERLB B9FERLBN B9CURPRG - B9WHNC18
+
+gen bcsid=BCSID
+
+drop BCSID
+
+save "Pregnancy_section_2012_flatfile", replace
+*/
+
+*/
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+/*Partnership*/
+
+********************************************************************************
+
+/*6941-Partnership Histories, 1986-2008*/
+
+clear
+use "N:\British Cohort Study\UK_data\6941-Partnership Histories, 1986-2008\stata9\bcs70_partnership_histories.dta" 
+
+keep bcsid WSWEEP05 WSWEEP06 WSWEEP07 WSWEEP08 cmsex numpshps partner pship pstcmc pendcmc pdur ptype poutcome psex psamesx ppage ppms pplegs pdivce pdivcmc cerrors perrors PERROR1 PERROR2 PERROR3 PERROR4 PERROR5 PERROR6 PERROR7 PERROR8 PERROR9 PERROR10 PERROR11 PERROR12 PERROR13 PERROR14 PERROR15 CERROR1 CERROR2 CERROR2A CERROR3 SWPFLG05 SWPFLG06 SWPFLG07 SWPFLG08 INTCMC05 INTCMC06 INTCMC07 INTCMC08 pslot pswp pfstswp
+
+gen page=pstcmc-(ppage*12)
+label var page "Partner's year of birth"
+
+save "Partnership_long", replace
+
+/*
+/*bcs70_partner_histories*/
+
+clear
+use "N:\British Cohort Study\UK_data\6941-Partnership Histories, 1986-2008\stata9\bcs70_partner_histories.dta" 
+
+keep bcsid WSWEEP05 WSWEEP06 WSWEEP07 WSWEEP08 cmsex numparts partner pstcmc pendcmc pdur ptype poutcome psex psamesx ppage ppms pplegs pmarbf pmarcp pmycmc phowend pdivce pdivcmc cerrors perrors PERROR1 PERROR2 PERROR3 PERROR4 PERROR5 PERROR6 PERROR7 PERROR8 PERROR9 PERROR10 PERROR11 PERROR12 PERROR13 PERROR14 PERROR15 CERROR1 CERROR2 CERROR2A CERROR3 SWPFLG05 SWPFLG06 SWPFLG07 SWPFLG08 INTCMC05 INTCMC06 INTCMC07 INTCMC08 pslot pswp pfstswp
+
+save "Partner_t2008", replace
+
+/*bcs70_partnership_histories*/
+*/
+
+*2012
+
+/*
+clear
+use "N:\British Cohort Study\UK_data\7473-Forty-Two-Year Follow-Up, 2012\stata11\bcs70_2012_relationships.dta" 
+
+keep BCSID B9RELHID B9RNRANY B9RSTM B9RSTY B9RCPREV B9RSEX B9RDOBM B9RDOBY B9RNOWMA B9RWHMAM B9RWHMAY B9RSLIVE B9RLIVPA B9RHWEND B9RENDM B9RENDY B9RDIVOR B9RDIVM B9RDIVY
+
+gen bcsid=BCSID
+
+gen B9RSTCMC=12*(B9RSTY-1900)+B9RSTM
+replace B9RSTCMC=12*(B9RSTY-1900)+6 if B9RSTM<1
+replace B9RSTCMC=. if B9RSTCMC<1
+lab var B9RSTCMC "When started living together"
+*tab B9RSTCMC B9RSTM if B9RSTY<1
+*tab B9RSTCMC B9RSTY if B9RSTM<1
+*tab B9RSTY B9RSTM
+
+gen B9RDOBCMC=12*(B9RDOBY-1900)+B9RDOBM
+replace B9RDOBCMC=. if B9RDOBCMC<1
+lab var B9RDOBCMC "Partner date of birth"
+*tab B9RDOBCMC B9RDOBM if B9RDOBY<1 
+*tab B9RDOBCMC B9RDOBY if B9RDOBM<1 
+*tab B9RDOBY B9RDOBM 
+
+gen B9RWHMACMC=12*(B9RWHMAY-1900)+B9RWHMAM
+replace B9RWHMACMC=. if B9RWHMACMC<1
+lab var B9RWHMACMC "Date of marriage"
+*tab B9RWHMACMC B9RWHMAM if B9RWHMAY<1
+*tab B9RWHMACMC B9RWHMAY if B9RWHMAM<1
+*tab B9RWHMAY B9RWHMAM
+
+gen B9RENDCMC=12*(B9RENDY-1900)+B9RENDM
+replace B9RENDCMC=. if B9RENDCMC<1
+lab var B9RENDCMC "When stopped living together"
+*tab B9RENDY B9RENDM
+
+gen B9RDIVCMC=12*(B9RDIVY-1900)+B9RDIVM
+replace B9RDIVCMC=. if B9RDIVCMC<1
+lab var B9RDIVCMC "When divorced"
+*tab B9RDIVY B9RDIVM
+
+drop BCSID B9RSTM B9RDOBM B9RWHMAM B9RENDM B9RDIVM
+
+gen psex=B9RSEX
+label var psex "Partner's gender"
+
+gen page=B9RDOBCMC
+label var page "Partner's year of birth"
+
+save "Partnership2012", replace
+*/
+
+/*
+*Further Information
+
+*bcs70_2012_flatfile
+
+clear
+use "N:\British Cohort Study\UK_data\7473-Forty-Two-Year Follow-Up, 2012\stata11\bcs70_2012_flatfile.dta" 
+
+keep BCSID B9RINT1 - B9CHINTR
+
+gen bcsid=BCSID
+
+drop BCSID
+
+save "Relationship_section_2012_flatfile", replace
+*/
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+/*Employment*/
+
+********************************************************************************
+
+/*6943-Activity Histories, 1986-2008 - (Employment)*/
+
+clear
+use "N:\British	Cohort Study\UK_data\6943-Activity Histories, 1986-2008\stata9\bcs70_activity_histories.dta" 
+*numlabel _all, add
+
+keep bcsid WSWEEP05 WSWEEP06 WSWEEP07 WSWEEP08 cmsex numacts actnum jstcmc jendcmc jdur jactiv jftpt histlen overlap poverlap gap pgap cerrors aerrors AERROR1 AERROR2 AERROR3 AERROR4 AERROR5 AERROR6 AERROR7 AERROR8 jyleft jyleftx jempst J91SEG J91SC J8NSSEC jtorg SWPFLG05 SWPFLG06 SWPFLG07 SWPFLG08 INTCMC05 INTCMC06 INTCMC07 INTCMC08 jlstswp jlstcmc jslot
+
+save "Employment_long", replace
+
+********************************************************************************
+********************************************************************************
+
+/*
+
+*2012
+
+/*
+clear
+use "N:\British Cohort Study\UK_data\7473-Forty-Two-Year Follow-Up, 2012\stata11\bcs70_2012_employment.dta"
+
+keep BCSID B9ACTID B9AYEND B9AENDY B9AENDM B9AACTIV B9ANSSEC B9ANSSCC B9ANS8 B9ASC B9ASEG
+
+gen B9AENDCMC=12*(B9AENDY-1900)+B9AENDM
+replace B9AENDCMC=. if B9AENDCMC<1
+lab var B9AENDCMC "When period of economic activity ended"
+*tab B9AENDY B9AENDM
+
+drop B9AENDM
+
+save "Empoyment2012", replace
+*/
+
+/*
+*Further Information
+
+*bcs70_2012_flatfile
+
+clear
+use "N:\British Cohort Study\UK_data\7473-Forty-Two-Year Follow-Up, 2012\stata11\bcs70_2012_flatfile.dta" 
+
+keep BCSID B9EMPINO - B9WHPR5
+
+gen bcsid=BCSID
+
+drop BCSID
+
+save "Employment_Income_section_2012_flatfile", replace
+*/
+
+*/
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+/*Time constant*/
+
+********************************************************************************
+
+/*6557-Thirty-Eight-Year Follow-Up, 2008-2009*/
+
+clear
+use "N:\British Cohort Study\UK_data\6557-Thirty-Eight-Year Follow-Up, 2008-2009\stata9_se\bcs_2008_followup.dta"
+
+keep bcsid b8cmsex b8gender bd8sex bd8gendd b8cntry b8malive b8madied b8palive b8padied b8gor
+
+gen sex=b8cmsex
+replace sex=3 if b8gender==1
+label de sex 1"Male" 2"Female" 3"Gender Reassignment (Male to Female)", modify
+label values sex sex
+label variable sex "Gender of Cohort Member"
+
+drop b8cmsex b8gender bd8sex bd8gendd
+
+rename b8cntry country08
+rename b8gor region08
+rename sex sex08
+rename b8malive motheralive08
+rename b8palive fatheralive08
+rename b8madied agemotherdied08
+rename b8padied agefatherdied08
+
+save "2008tc", replace
+
+keep bcsid sex08 region08 motheralive08 fatheralive08 agemotherdied08 agefatherdied08
+
+save "2008tc", replace
+
+********************************************************************************
+
+/*3535-Sixteen-Year Follow-Up, 1986*/
+
+/*bcs7016x*/
+clear
+use "N:\British Cohort Study\UK_data\3535-Sixteen-Year Follow-Up, 1986\stata9_se\bcs7016x.dta"
+
+keep bcsid sex86 f7 f8 c6_2 c6_3a -c6_4b c6_7 c6_13 c6_14 c6_19 f46a f46b gd1a gd2 oa2_1 oa2_6 oa3_1 oa3_2 oa3_3 oa8a_1 oa8a_2 oa8a_3 oa8a_4 oa8b_1 oa8b_2 oa8b_3 oa8b_4 oa11_10 oa11_11 oa11_12 oe2 t6_1 t6_2 t6_3 t6_4 t6_5 t6_6 t6_7 t6_9 t6_10 t7_1 t7_2 t8_1 t8_2 t11_2 t11_9 t12_1 t12_2 c5k45
+
+/*Siblings*/
+/*
+Health related behavior 	-> You have brothers or sisters? 	-> f7 -> Numbre of children in the family
+							-> How many brothers & sisterrs? 	-> f8 -> Family position of teenager
+Parental Interview Form		-> How many People are there in the household in all?
+								-> younger then CM 				-> oa8a_1
+								-> Exact same age 				-> oa8a_2
+								-> older tehn cm but younger 21	-> oa8a_3
+								-> older and over 21			-> oa8a_4
+							-> How many are blood broothers & sisters of the study teenager (or half brothers/sisters)?
+								-> younger then CM 				-> oa8b_1
+								-> Exact same age 				-> oa8b_2
+								-> older tehn cm but younger 21	-> oa8b_3
+								-> older and over 21			-> oa8b_4
+CM answered -> Backround information -> 
+		-> Twin?
+				-> c6_2
+		-> How many full brothers & sisters do you have who are stll living in the samehousehold then you?
+			(Please note if a send Twin the first twin counts as older then you)
+				-> Older 	-> c6_3a
+				-> Younger	-> c6_3b
+		-> How many full brothers & sisters do you have who are no longer living in the samehousehold then you?
+				-> older	-> c6_4a
+				-> younger	-> c6_4b
+*/
+gen os86=c6_3a+c6_4a
+replace os86=5 if os86>=5 | c6_3a==5 | c6_4a==5
+replace os86=-2 if c6_3a==-2 | c6_4a==-2
+replace os86=-1 if c6_3a==-1 | c6_4a==-1
+label variable os86 "No.of sibling in same house and elsewhere older - conservative assumption"
+label de os86 -1"No questionaire" -2"Not stated" 5"More than 4", modify
+label values os86 os86
+gen ys86=c6_3b+c6_4b
+replace ys86=5 if ys86>=5 | c6_3b==5 | c6_4b==5
+replace ys86=-2 if c6_3b==-2 | c6_4b==-2
+replace ys86=-1 if c6_3b==-1 | c6_4b==-1
+label variable ys86 "No.of sibling in same house and elsewhere younger - conservative assumption"
+label de ys86 -1"No questionaire" -2"Not stated" 5"More than 4", modify
+label values ys86 ys86
+gen s86=os86+ys86
+replace s86=5 if s86>=5 | os86==5 | ys86==5
+replace s86=-2 if os86==-2 | ys86==-2
+replace s86=-1 if os86==-1 | ys86==-1
+label variable s86 "No.of sibling in same house and elsewhere - conservative assumption"
+label de s86 -1"No questionaire" -2"Not stated" 5"More than 4", modify
+label values s86 s86
+
+replace c6_3a=0 if c6_3a==-2
+replace c6_3b=0 if c6_3b==-2
+replace c6_4a=0 if c6_4a==-2
+replace c6_4b=0 if c6_4b==-2
+gen oldersibling86=.
+replace oldersibling86=c6_3a+c6_4a if c6_3a>=0 & c6_4a>=0
+replace oldersibling86=c6_3a if c6_3a>=0 & c6_4a<0
+replace oldersibling86=c6_4a if c6_3a<0 & c6_4a>=0
+replace oldersibling86=5 if oldersibling86>=5 | c6_3a==5 | c6_4a==5
+replace oldersibling86=-1 if c6_3a==-1 & c6_4a==-1
+label variable oldersibling86 "min.No.of sibling in same house and elsewhere older - assumption: not 'stated'=0"
+label de oldersibling86 -1"No questionaire" 5"More than 4", modify
+label values oldersibling86 oldersibling86
+gen youngersibling86=.
+replace youngersibling86=c6_3b+c6_4b if c6_3b>=0 & c6_4b>=0
+replace youngersibling86=c6_3b if c6_3b>=0 & c6_4b<0
+replace youngersibling86=c6_4b if c6_3b<0 & c6_4b>=0
+replace youngersibling86=5 if youngersibling86>=5 | c6_3b==5 | c6_4b==5
+replace youngersibling86=-1 if c6_3b==-1 & c6_4b==-1
+label variable youngersibling86 "min.No.of sibling in same house and elsewhere younger - assumption: not 'stated'=0"
+label de youngersibling86 -1"No questionaire" 5"More than 4", modify
+label values youngersibling86 youngersibling86
+gen sibling86=youngersibling86+oldersibling86
+replace sibling86=5 if sibling86>=5 | youngersibling86==5 | oldersibling86==5
+replace sibling86=-1 if youngersibling86==-1 & oldersibling86==-1
+label variable sibling86 "min.No.of sibling in same house and elsewhere - assumption: not 'stated'=0"
+label de sibling86 -1"No questionaire" 5"More than 4", modify
+label values sibling86 sibling86
+
+rename c6_2 twin86
+rename c6_13 rural86
+rename c6_14 ethnic1_86
+rename gd1a religion1_86
+rename gd2 religion2_86
+rename oa2_1 birthcountry86
+rename oa2_6 firstinUK86
+rename oa3_1 ethnic2_86
+rename oa3_2 ethnicmother86
+rename oa3_3 ethnicfather86
+rename t11_2 FatherSocialClass86
+rename t11_9 MotherSocialClass86
+rename t12_1 FatherEmployStat86
+rename t12_2 MotherEmployStat86
+rename oe2 income86
+rename t7_1 edufath86
+rename t7_2 edumoth86
+rename t8_1 empfath86
+rename t8_2 empmoth86
+label variable c6_7 "Who does teen live with as parent? (1986)"
+
+rename oa8b_1 siblingyounger86
+rename oa8b_2 twins86
+
+gen siblingolder86=oa8b_3+oa8b_4
+label variable siblingolder86 "Blood brothers, sisters older than teen"
+replace siblingolder86=-1 if siblingolder86==-2
+replace siblingolder86=-2 if siblingolder86==-4
+label de siblingolder86 -1"No questionaire" -2"Not stated", modify
+label values siblingolder86 siblingolder86
+
+gen soy86=siblingolder86+siblingyounger86
+replace soy86=-2 if siblingolder86==-2 | siblingyounger86==-2
+replace soy86=-1 if siblingolder86==-1 | siblingyounger86==-1
+label variable soy86 "Blood brothers, sisters older & younger than teen (excluding siblings exact same age) - conservative assumption"
+label de soy86 -1"No questionaire" -2"Not stated", modify
+label values soy86 soy86
+
+gen siblingsize=soy86+twins86
+replace siblingsize=-2 if soy86==-2 | twins86==-2
+replace siblingsize=-1 if soy86==-1 | twins86==-1
+label variable siblingsize "Blood brothers, sisters of CM (wave 1986) - conservative assumption"
+label de siblingsize -1"No questionaire" -2"Not stated", modify
+label values siblingsize siblingsize
+
+gen oa8a_34=oa8a_3+oa8a_4
+label variable oa8a_34 "No.in Household older then CM"
+replace oa8a_34=-1 if oa8a_34==-2
+replace oa8a_34=-2 if oa8a_34==-4
+label de oa8a_34 -1"No questionaire" -2"Not stated", modify
+label values oa8a_34 oa8a_34
+
+gen oa8a_134=oa8a_34+oa8a_1
+replace oa8a_134=-2 if oa8a_34==-2 | oa8a_1==-2
+replace oa8a_134=-1 if oa8a_34==-1 | oa8a_1==-1
+label variable oa8a_134 "No.in Household older & younger then CM (excluding exact same age) - conservative assumption"
+label de oa8a_134 -1"No questionaire" -2"Not stated", modify
+label values oa8a_134 oa8a_134
+
+gen oa8a_1234=oa8a_134+oa8a_2
+replace oa8a_1234=-2 if oa8a_134==-2 | oa8a_2==-2
+replace oa8a_1234=-1 if oa8a_134==-1 | oa8a_2==-1
+label variable oa8a_1234 "No.in Household older & younger then CM - conservative assumption"
+label de oa8a_1234 -1"No questionaire" -2"Not stated", modify
+label values oa8a_1234 oa8a_1234
+
+drop oa8a_3 oa8a_4 oa8b_3 oa8b_4 c6_3a -c6_4b
+
+save "1986tc", replace
+
+/*bcs4derived*/
+clear
+use "N:\British Cohort Study\UK_data\3535-Sixteen-Year Follow-Up, 1986\stata9_se\bcs4derived.dta" 
+numlabel _all, add
+
+keep BCSID BD4REGN BD4GOR
+
+rename BCSID bcsid
+rename BD4GOR region86
+
+merge 1:1 bcsid using "1986tc"
+drop _merge
+save "1986tc", replace
+
+keep bcsid region86 sex86 oa8a_1234 f7 f8 twin86 s86 os86 ys86 soy86 siblingsize oldersibling86 youngersibling86 sibling86 c6_7 rural86 ethnic1_86 religion1_86 religion2_86 birthcountry86 firstinUK86 ethnic2_86 ethnicmother86 ethnicfather86 twins86 siblingyounger86 siblingolder86 income86 edufath86 edumoth86 empfath86 empmoth86 FatherSocialClass86 MotherSocialClass86 FatherEmployStat86 MotherEmployStat86 c5k45 oa11_10 oa11_11 oa11_12
+
+save "1986tc", replace
+
+********************************************************************************
+
+/*3723-Ten-Year Follow-Up, 1980*/
+clear
+use "N:\British Cohort Study\UK_data\3723-Ten-Year Follow-Up, 1980\stata11_se\3723.dta" 
+
+keep bcsid tc10 sex10 a2_1 a2_2 a2_3 a5_1 - a5_5 a6_1 - a6_5 a7 a8_1 a8_2-a8_5d a12_4 a12_1 a12_2 a12_3 c2_1-c2_8 c2_9-c2_16 c3_4 c3_5  c3_11 c3_12 c4_1a c4_1b c4_2a c4_2b c9_1-c9_8
+numlabel _all, add
+
+rename tc10 twin80
+rename sex10 sex80
+rename a2_1 birthcountry80
+rename a2_2 birthcountryother80
+rename a2_3 firstinUK80
+gen income80=.
+replace income80=1 if c9_1==1
+replace income80=2 if c9_2==1
+replace income80=3 if c9_3==1
+replace income80=4 if c9_4==1
+replace income80=5 if c9_5==1
+replace income80=6 if c9_6==1
+replace income80=7 if c9_7==1
+label variable income80 "Total gross family income"
+label de income80 1"under 35pw" 2"35-49pw" 3"50-99pw" 4"100-149pw" 5"150-199" 6"200-249pw" 7"250 or more", modify
+label values income80 income80
+gen fatheremployment80=.
+replace fatheremployment80=1 if c2_1==1
+replace fatheremployment80=2 if c2_2==1
+replace fatheremployment80=3 if c2_3==1
+replace fatheremployment80=4 if c2_4==1
+replace fatheremployment80=5 if c2_5==1
+replace fatheremployment80=6 if c2_6==1
+replace fatheremployment80=7 if c2_7==1
+replace fatheremployment80=8 if c2_8==1
+label variable fatheremployment80 "Fathers employment"
+label de fatheremployment80 1"regular paid job" 2"works occaisonally" 3"seeking work" 4"looks after home" 5"not in paid job" 6"reason not paid job" 7"other employment situation" 8"no male head in house", modify
+label values fatheremployment80 fatheremployment80
+gen motheremployment80=.
+replace motheremployment80=1 if c2_9==1
+replace motheremployment80=2 if c2_10==1
+replace motheremployment80=3 if c2_11==1
+replace motheremployment80=4 if c2_12==1
+replace motheremployment80=5 if c2_13==1
+replace motheremployment80=6 if c2_14==1
+replace motheremployment80=7 if c2_15==1
+replace motheremployment80=8 if c2_16==1
+label variable motheremployment80 "motherss employment"
+label de motheremployment80 1"regular paid job" 2"works occaisonally" 3"seeking work" 4"looks after home" 5"not in paid job" 6"reason not paid job" 7"other employment situation" 8"no female head in house", modify
+label values motheremployment80 motheremployment80
+label variable a7 "Child lived with same parents since born (1980)"
+label variable a8_1 "Child ever lived with only one parent (1980)"
+rename a12_1 ethnic80
+rename a12_2 ethnicmother80
+rename a12_3 ethnicfather80
+rename a5_1 motherfigure80
+rename a6_1 fatherfigure80
+
+drop c9_1 c9_2 c9_3 c9_4 c9_5 c9_6 c9_7 c9_8 c2_1 c2_2 c2_3 c2_4 c2_5 c2_6 c2_7 c2_8 c2_9 c2_10 c2_11 c2_12 c2_13 c2_14 c2_15 c2_16
+
+save "1980tc", replace
+
+/*bcs3derived*/
+clear
+use "N:\British Cohort Study\UK_data\2699-Five-Year Follow-Up, 1975\stata11\bcs2derived.dta" 
+numlabel _all, add
+
+keep BCSID BD2REGN
+
+rename BCSID bcsid
+
+merge 1:1 bcsid using "1980tc"
+rename _merge merge80
+save "1980tc", replace
+
+keep bcsid twin80 sex80 birthcountry80 birthcountryother80 firstinUK80 a7 a8_1 ethnic80 ethnicfather80 ethnicmother80 motherfigure80 fatherfigure80 c3_4 c3_5 c3_11 c3_12 c4_1a c4_1b c4_2a c4_2b income80 fatheremployment80 motheremployment80 motherfigure80-a5_5 fatherfigure80-a6_5 a7 a8_1 a8_2-a8_5d 
+
+save "1980tc", replace
+
+********************************************************************************
+/*2699-Five-Year Follow-Up, 1975*/
+
+clear
+use "N:\British Cohort Study\UK_data\2699-Five-Year Follow-Up, 1975\stata11\f699b.dta" 
+
+keep bcsid e001 e008 e009 e010 e010a e010b e011 e011a e011b e189a e189b e190 e191 e192 e193 e194 e218 e220 e245 e246a e246b e247
+numlabel _all, add
+
+rename e245 ethnic75
+rename e246a ethnicmother75
+rename e246b ethnicfather75
+rename e247 ethnicparents75
+rename e001 twin75
+rename e008 agemother75
+rename e009 agefather75
+
+save "1975tc", replace
+
+********************************************************************************
+
+/*2666-Birth and 22-Month Subsample, 1970-1972*/
+
+/*bcs1derived*/
+clear
+use "N:\British Cohort Study\UK_data\2666-Birth and 22-Month Subsample, 1970-1972\stata9\bcs1derived.dta" 
+numlabel _all, add
+
+keep BCSID BD1REGN  BD1PSOC BD1MAGM BD1FAGM
+rename BCSID bcsid
+
+save "1970tc", replace
+
+/*bcs7072a*/
+clear
+use "N:\British Cohort Study\UK_data\2666-Birth and 22-Month Subsample, 1970-1972\stata9\bcs7072a.dta" 
+
+keep bcsid a0255 a0009 a0010 a0012 a0013 a0014 a0017 a0018 a0015 a0019 a0376 a0248 a0166 a0005a
+numlabel _all, add
+
+rename a0255 sex70
+rename a0248 twin70
+rename a0009 edumoth70
+rename a0010 edufath70
+rename a0012 maritalparents70
+rename a0014 FatherSocialClass70
+rename a0015 FatherEmploymentStat70
+rename a0018 MotherSocialClass70
+rename a0019 MotherEmploymentStat70
+rename a0166 parity70
+label variable parity70 "number of siblings at birth"
+*replace parity70=. if parity70==-2
+
+merge 1:1 bcsid using "1970tc"
+rename _merge merge70
+save "1970tc", replace
+
+keep bcsid edumoth70 edufath70 maritalparents70 FatherSocialClass70 FatherEmploymentStat70 MotherSocialClass70 MotherEmploymentStat70  twin70 sex70 a0376 parity70 a0005a
+
+save "1970tc", replace
+
+********************************************************************************
+
+/*Generate Time-Constant-Dataset over used waves*/
+
+clear
+use "1970tc"
+
+merge 1:1 bcsid using "1975tc"
+rename _merge merge1
+
+merge 1:1 bcsid using "1980tc"
+rename _merge merge2
+
+merge 1:1 bcsid using "1986tc"
+rename _merge merge3
+
+merge 1:1 bcsid using "2008tc"
+rename _merge merge4
+
+gen sex=sex08
+label de sex 1"Male" 2"Female" 3"Gender Reassignment (Male to Female)" 0"Missing", modify
+label values sex sex
+label variable sex "Gender of Cohort Member"
+replace sex=sex86 if sex==.
+replace sex=sex80 if sex==.
+replace sex=sex70 if sex==. & sex70>=0
+replace sex=0 if sex==.
+keep if a0376==3 | a0376==.
+gen twin=twin70
+label de twin 1"Singleton" 2"Twin" 0"Missing", modify
+label values twin twin
+label variable twin "Birth Multiple Single, Twin, etc."
+replace twin=1 if twin==. & twin80==0
+replace twin=2 if (twin==. & twin80==1) | (twin==. & twin==2)
+replace twin=1 if (twin==. & twin86==2)
+replace twin=2 if (twin==. & twin86==1)
+replace twin=1 if (twin==. & twin75==0)
+replace twin=2 if (twin==. & (twin75==1 | twin75==2))
+
+drop sex70 sex80 sex86 sex08 merge1 merge2 merge3 merge4 a0376 twin70 twin75 twin80 twin86 
+
+label variable agefather75 "Age of Father figure in 1970"
+label variable agemother75 "Age of Mother figure in 1970"
+replace a0005a=. if a0005a==-2
+rename a0005a agedelivery
+replace agemother75=. if agemother75<0
+replace agefather75=. if agefather75<0
+replace agedelivery=agemother75 if agedelivery==.
+rename agefather75 agefather
+rename agedelivery agemother
+
+drop agemother75
+
+replace edumoth70=. if edumoth70<0
+replace edufath70=. if edufath70<0
+replace maritalparents70=. if maritalparents70==-2
+replace parity70=. if parity70==-2
+replace FatherSocialClass70=. if FatherSocialClass70==-2
+replace MotherSocialClass70=. if MotherSocialClass70==-2
+rename FatherEmploymentStat70 fathemp70
+rename MotherEmploymentStat70 mothemp70
+replace fathemp70=. if fathemp70<0
+replace mothemp70=. if mothemp70<0
+
+tab e010b e011b if e010a==1 & e011b==1, m
+rename e010 mothfigu75
+rename e010a mothfamdisruption75
+rename e010b mothfamdisrage75
+rename e011 fathfigu75
+rename e011a fathfamdisruption75
+rename e011b fathfamdisrage75
+label de mothfamdisruption75 -3"Not Stated" -1"Naural mother" 1"Death of Mum or Dad" 2"Divorce" 3"Other Situation", modify
+label values mothfamdisruption75 mothfamdisruption75
+label de fathfamdisruption75 -3"Not Stated" -1"Naural father" 1"Death of Mum or Dad" 2"Divorce" 3"Other Situation", modify
+label values fathfamdisruption75 fathfamdisruption75
+label de mothfamdisrage75 -2"age 0-5 - not known" -1"Naural mother", modify
+label values mothfamdisrage75 mothfamdisrage75
+label de fathfamdisrage75 -2"age 0-5 - not known" -1"Naural father", modify
+label values fathfamdisrage75 fathfamdisrage75
+
+rename motherfigure80 mothfigu80
+replace mothfigu80=10 if a5_2==1
+replace mothfigu80=11 if a5_2==2
+replace mothfigu80=12 if a5_2==3
+label de mothfigu80 1"Natural mother" 2"Mother by adoption" 3"Step mother" 4"Foster mother" 5"Grandmother" 6"Elder Sister" 7"Cohabitee of father" 8"other" 10"other and related" 9"No mother figure" 11"other and not related" 12"other and not specified", modify
+label values mothfigu80 mothfigu80
+rename fatherfigure80 fathfigu80
+replace fathfigu80=10 if a6_2==1
+replace fathfigu80=11 if a6_2==2
+replace fathfigu80=12 if a6_2==3
+label de fathfigu80 1"Natural father" 2"Father by adoption" 3"Step father" 4"Foster father" 5"Grandfather" 6"Elder Brother" 7"Cohabitee of mother" 8"other" 10"other and related" 9"No father figure" 11"other and not related" 12"other and not specified", modify
+label values fathfigu80 fathfigu80
+rename a5_3 mothfamdisruption80
+rename a6_3 fathfamdisruption80
+replace mothfamdisruption80=-1 if mothfigu80==1 & mothfamdisruption80==.
+replace fathfamdisruption80=-1 if fathfigu80==1 & fathfamdisruption80==.
+rename a5_5 mothfamdisrage80
+rename a6_5 fathfamdisrage80
+replace mothfamdisrage80=mothfamdisrage80 - 70
+replace mothfamdisrage80=-1 if mothfigu80==1 & mothfamdisrage80==.
+replace mothfamdisrage80=-2 if (mothfigu80>1 & mothfigu80<13) & mothfamdisrage80==.
+label de mothfamdisrage80 -2"age 0-10 - not known" -1"Naural mother", modify
+label values mothfamdisrage80 mothfamdisrage80
+replace fathfamdisrage80=fathfamdisrage80 - 70
+replace fathfamdisrage80=-1 if fathfigu80==1 & fathfamdisrage80==.
+replace fathfamdisrage80=-2 if (fathfigu80>1 & fathfigu80<13) & fathfamdisrage80==.
+label de fathfamdisrage80 -2"age 0-10 - not known" -1"Naural father", modify
+label values fathfamdisrage80 fathfamdisrage80
+drop a5_2 a6_2
+
+rename oa11_10 age05famdisr86
+rename oa11_11 age10famdisr86
+rename oa11_12 age16famdisr86
+rename c6_7 famdisruption86
+
+rename e189a motheduqual75
+rename e189b fatheduqual75
+rename e190 parentseduqual75
+rename e191 mothleftschool75
+rename e192 fathleftschool75
+rename e193 mothfteduafterschool75
+rename e194 fathfteduafterschool75
+rename e218 accom75
+rename e220 tenure75
+
+gen foreignborn=.
+replace foreignborn=1 if (birthcountry86>0 & birthcountry86<6) | (birthcountry80>0 & birthcountry80<6)
+replace foreignborn=2 if birthcountry86==6 | birthcountry80==6
+label variable foreignborn "CM's country of birth"
+label de foreignborn 1"England, Wales, Scotland, Northern Ireland, Irish Republic" 2"other Country", modify
+label values foreignborn foreignborn
+/*
+tab birthcountry80 foreignborn, m
+tab birthcountry80 foreignborn, m
+*/
+drop birthcountry80 birthcountry86 birthcountryother80
+
+tab f7 if f7>=0
+tab f8 if f8>=0
+tab oa8a_1234 if oa8a_1234>=0
+tab siblingsize if siblingsize>=0
+tab s86 if s86>=0
+tab sibling86 if sibling86>=0
+
+tab f7 s86, m
+
+tab siblingsize if siblingsize>=0
+tab sibling86 if sibling86>=0
+tab s86 if s86>=0
+tab siblingsize s86 if siblingsize>=0 & s86>=0
+tab siblingsize sibling86 if siblingsize>=0 & sibling86>=0
+tab soy86 s86 if soy86>=0 & s86>=0
+tab soy86 sibling86 if soy86>=0 & sibling86>=0
+
+drop twins86 siblingyounger86 siblingolder86 oldersibling86 youngersibling86 os86 ys86 soy86
+
+replace f7=f7-1
+replace f7=5 if f7>=5 & f7<10
+gen scm86=.
+replace scm86=s86 if s86>=0 & s86<10
+replace scm86=f7 if scm86==. & f7>=0 & f7<10
+tab scm86
+
+*drop f7 s86
+
+/*Siblings*/
+/*
+Health related behavior 	-> You have brothers or sisters? 	-> f7 -> Numbre of children in the family
+(a3535uab)							-> f7
+brother									
+							-> How many brothers & sisterrs? 	-> f8 -> Family position of teenager
+									-> f8
+									
+Parental Interview Form		-> How many People are there in the household in all?
+(a3535ubb)						-> younger then CM 				-> oa8a_1
+brother							-> Exact same age 				-> oa8a_2
+								-> older tehn cm but younger 21	-> oa8a_3
+								-> older and over 21			-> oa8a_4
+									-> oa8a_1234
+									
+							-> How many are blood broothers & sisters of the study teenager (or half brothers/sisters)?
+								-> younger then CM 				-> oa8b_1
+								-> Exact same age 				-> oa8b_2
+								-> older tehn cm but younger 21	-> oa8b_3
+								-> older and over 21			-> oa8b_4
+									-> siblingsize
+									
+CM answered -> Backround information -> 
+(a3535uab)		-> Twin?
+c6					-> c6_2
+				-> How many full brothers & sisters do you have who are stll living in the samehousehold then you?
+					(Please note if a send Twin the first twin counts as older then you)
+					-> Older 	-> c6_3a
+					-> Younger	-> c6_3b
+				-> How many full brothers & sisters do you have who are no longer living in the samehousehold then you?
+					-> older	-> c6_4a
+					-> younger	-> c6_4b
+									-> s86 & sibling86
+*/
+
+gen fathdied=.
+label variable fathdied "Age of CM when father died"
+replace fathdied=-1 if fatheralive08==1
+label de fathdied -1"CM's father is alive till 2008" -2"CM's father died" -8"Do not know" -9"Refusal", modify
+label values fathdied fathdied
+replace fathdied=agefatherdied08 if fatheralive08==2
+replace fathdied=-2 if mothfamdisruption80==1 & (fathdied==. | fathdied<0)
+replace fathdied=-2 if fathfamdisruption80==1 & (fathdied==. | fathdied<0)
+
+gen mothdied=.
+label variable mothdied "Age of CM when mother died"
+replace mothdied=-1 if motheralive08==1
+label de mothdied -1"CM's mother is alive till 2008" -2"CM's mother died" -8"Do not know" -9"Refusal", modify
+label values mothdied mothdied
+replace mothdied=agemotherdied08 if motheralive08==2
+replace mothdied=-2 if mothfamdisruption80==2 & (mothdied==. | mothdied<0)
+replace mothdied=-2 if fathfamdisruption80==2 & (mothdied==. | mothdied<0)
+
+drop fatheralive08 agefatherdied08 motheralive08 agemotherdied08
+
+save "time_constant_full", replace
+
+clear
+use "time_constant_full"
+
+keep bcsid sex foreignborn rural86 region86 parity70 agemother agefather income80 c5k45 income86 FatherSocialClass86 - MotherEmployStat86 twin siblingsize famdisruption86
+
+save "time_constant", replace
+
+clear
+use "time_constant_full"
+
+drop sex foreignborn rural86 region86 parity70 agemother agefather income80 c5k45 income86 FatherSocialClass86 - MotherEmployStat86 twin siblingsize famdisruption86
+
+save "time_constant_idle", replace
+
+/*
+drop if sex!=2
+tab birthcountryother80 birthcountry80, m
+replace birthcountry80=8 if (birthcountryother80>0 & birthcountryother80<10) & (birthcountry80==6 | birthcountry80==.)
+tab birthcountry80, m
+tab birthcountry86, m
+tab birthcountry80 birthcountry86, m
+tab income80, m
+tab income86, m
+tab income86 income80, m
+tab twin, m
+tab twins86, m
+tab twins86 twin, m
+tab siblingyounger86, m
+tab siblingolder86, m
+tab parity70, m
+tab parity70 siblingolder86, m
+tw hist agedelivery70, discret
+*/
+
+/*
+gen famdisr86=.
+replace famdisr86=age05famdisr86 if age05famdisr86>0 & age05famdisr86<10 & famdisr86==.
+replace famdisr86=age10famdisr86 if age10famdisr86>0 & age10famdisr86<10 & famdisr86==.
+replace famdisr86=age16famdisr86 if age16famdisr86>0 & age16famdisr86<10 & famdisr86==.
+*/
+
+/*
+***Wrong!!!!***
+
+label de famdis -4"Natural Father (father80)" -3"Natural Mother (mother80)" ///
+	-2"Natural Father (father75)" -1"Natural Mother (mother75)" 1"Death of mum or dad (mother75)" 2"Death of mum or dad (mother75)" ///
+	7"Divorce (mother75)" 8"Divorce (father75)" 13"other situation (mother75)" 14"other Situation (father75)" ///
+	22"Not Stated - Change? (father75)" 21"Not Stated - Change? (mother75)" ///
+	3"Nautural Father died (mother80)" 5"Natural Mother died (mother80)" 4"Nautural Father died (father80)" 6"Natural Mother died (father80)" ///
+	9"Natural Parents seperated (mother80)" 11"Natural Parents devorced (mother80)" 10"Natural Parents seperated (father80)" 12"Natural Parents devorced (father80)" ///
+	15"Other (mother80)" 16"other (father80)" 17"take into care (mother80)" 18"take into care (father80)" ///
+	23"Not stated - Change? (mother80)" 24"Not stated - Change? (father80)" ///
+	31"Single parent at birth (mother80)" 32"Single parent at birth (father80)", modify
+
+gen famdis00=.
+replace famdis00=-4 if fathfamdisruption80==-1
+replace famdis00=-3 if mothfamdisruption80==-1
+replace famdis00=-2 if fathfamdisruption75==-1
+replace famdis00=-1 if mothfamdisruption75==-1
+replace famdis00=1 if mothfamdisrage75==0 & mothfamdisruption75==1
+replace famdis00=2 if fathfamdisrage75==0 & fathfamdisruption75==1
+replace famdis00=7 if mothfamdisrage75==0 & mothfamdisruption75==2
+replace famdis00=8 if fathfamdisrage75==0 & fathfamdisruption75==2
+replace famdis00=13 if mothfamdisrage75==0 & mothfamdisruption75==3
+replace famdis00=14 if fathfamdisrage75==0 & fathfamdisruption75==3
+replace famdis00=22 if fathfamdisrage75==0 & fathfamdisruption75==-3
+replace famdis00=21 if mothfamdisrage75==0 & mothfamdisruption75==-3
+replace famdis00=3 if mothfamdisrage80==0 & mothfamdisruption80==1
+replace famdis00=5 if mothfamdisrage80==0 & mothfamdisruption80==2
+replace famdis00=4 if fathfamdisrage80==0 & fathfamdisruption80==1
+replace famdis00=6 if fathfamdisrage80==0 & fathfamdisruption80==2
+replace famdis00=9 if mothfamdisrage80==0 & mothfamdisruption80==3
+replace famdis00=11 if mothfamdisrage80==0 & mothfamdisruption80==4
+replace famdis00=10 if fathfamdisrage80==0 & fathfamdisruption80==3
+replace famdis00=12 if fathfamdisrage80==0 & fathfamdisruption80==4
+replace famdis00=15 if mothfamdisrage80==0 & mothfamdisruption80==7
+replace famdis00=16 if fathfamdisrage80==0 & fathfamdisruption80==7
+replace famdis00=17 if mothfamdisrage80==0 & mothfamdisruption80==6
+replace famdis00=18 if fathfamdisrage80==0 & fathfamdisruption80==6
+replace famdis00=24 if fathfamdisrage80==0 & fathfamdisruption80==-3
+replace famdis00=23 if mothfamdisrage80==0 & mothfamdisruption80==-3
+
+replace famdis00=31 if mothfamdisruption80==5
+replace famdis00=32 if fathfamdisruption80==5
+
+gen famdis01=.
+replace famdis00=-4 if fathfamdisruption75==-2
+replace famdis00=-3 if mothfamdisruption75==-2
+replace famdis00=-2 if fathfamdisruption75==-1
+replace famdis00=-1 if mothfamdisruption75==-1
+replace famdis00=1 if mothfamdisrage75==1 & mothfamdisruption75==1
+replace famdis00=2 if fathfamdisrage75==1 & fathfamdisruption75==1
+replace famdis00=7 if mothfamdisrage75==1 & mothfamdisruption75==2
+replace famdis00=8 if fathfamdisrage75==1 & fathfamdisruption75==2
+replace famdis00=13 if mothfamdisrage75==1 & mothfamdisruption75==3
+replace famdis00=14 if fathfamdisrage75==1 & fathfamdisruption75==3
+
+gen famdis02=.
+replace famdis00=-4 if fathfamdisruption75==-2
+replace famdis00=-3 if mothfamdisruption75==-2
+replace famdis00=-2 if fathfamdisruption75==-1
+replace famdis00=-1 if mothfamdisruption75==-1
+replace famdis00=1 if mothfamdisrage75==2 & mothfamdisruption75==1
+replace famdis00=2 if fathfamdisrage75==2 & fathfamdisruption75==1
+replace famdis00=7 if mothfamdisrage75==2 & mothfamdisruption75==2
+replace famdis00=8 if fathfamdisrage75==2 & fathfamdisruption75==2
+replace famdis00=13 if mothfamdisrage75==2 & mothfamdisruption75==3
+replace famdis00=14 if fathfamdisrage75==2 & fathfamdisruption75==3
+
+gen famdis03=.
+replace famdis00=-4 if fathfamdisruption75==-2
+replace famdis00=-3 if mothfamdisruption75==-2
+replace famdis00=-2 if fathfamdisruption75==-1
+replace famdis00=-1 if mothfamdisruption75==-1
+replace famdis00=1 if mothfamdisrage75==3 & mothfamdisruption75==1
+replace famdis00=2 if fathfamdisrage75==3 & fathfamdisruption75==1
+replace famdis00=7 if mothfamdisrage75==3 & mothfamdisruption75==2
+replace famdis00=8 if fathfamdisrage75==3 & fathfamdisruption75==2
+replace famdis00=13 if mothfamdisrage75==3 & mothfamdisruption75==3
+replace famdis00=14 if fathfamdisrage75==3 & fathfamdisruption75==3
+
+gen famdis04=.
+replace famdis00=-4 if fathfamdisruption75==-2
+replace famdis00=-3 if mothfamdisruption75==-2
+replace famdis00=-2 if fathfamdisruption75==-1
+replace famdis00=-1 if mothfamdisruption75==-1
+replace famdis00=1 if mothfamdisrage75==4 & mothfamdisruption75==1
+replace famdis00=2 if fathfamdisrage75==4 & fathfamdisruption75==1
+replace famdis00=7 if mothfamdisrage75==4 & mothfamdisruption75==2
+replace famdis00=8 if fathfamdisrage75==4 & fathfamdisruption75==2
+replace famdis00=13 if mothfamdisrage75==4 & mothfamdisruption75==3
+replace famdis00=14 if fathfamdisrage75==4 & fathfamdisruption75==3
+
+gen famdis05=.
+replace famdis00=-4 if fathfamdisruption75==-2
+replace famdis00=-3 if mothfamdisruption75==-2
+replace famdis00=-2 if fathfamdisruption75==-1
+replace famdis00=-1 if mothfamdisruption75==-1
+replace famdis00=1 if mothfamdisrage75==5 & mothfamdisruption75==1
+replace famdis00=2 if fathfamdisrage75==5 & fathfamdisruption75==1
+replace famdis00=7 if mothfamdisrage75==5 & mothfamdisruption75==2
+replace famdis00=8 if fathfamdisrage75==5 & fathfamdisruption75==2
+replace famdis00=13 if mothfamdisrage75==5 & mothfamdisruption75==3
+replace famdis00=14 if fathfamdisrage75==5 & fathfamdisruption75==3
+
+gen famdis06=.
+
+gen famdis07=.
+
+gen famdis08=.
+
+gen famdis09=.
+
+gen famdis10=.
+
+label values famdis00 famdis
+label values famdis01 famdis
+label values famdis02 famdis
+label values famdis03 famdis
+label values famdis04 famdis
+label values famdis05 famdis
+label values famdis06 famdis
+label values famdis07 famdis
+label values famdis08 famdis
+label values famdis09 famdis
+label values famdis10 famdis
+*/
+
+
+/*
+gen naturalparent75=.
+replace naturalparent75=1 if mothfigu75==1 & fathfigu75==1
+replace naturalparent75=2 if mothfigu75==1 & fathfigu75!=1
+replace naturalparent75=3 if mothfigu75!=1 & fathfigu75==1
+replace naturalparent75=4 if mothfigu75>1 & mothfigu75<10 & fathfigu75>1 & fathfigu75<10
+label de naturalparent75 1"Natural Mother & Father" 2"only natural mother" 3"only natural father" 4"no natural parents", modify
+label values naturalparent75 naturalparent75
+label variable naturalparent75 "Ralationship to Child of mother & father figure (natural mother & father?)"
+
+gen famdisruption75=.
+replace famdisruption75=1 if mothfamdisruption75==1 | fathfamdisruption75==1 & (mothfamdisruption75!=-3 | mothfamdisruption75!=-1 | mothfamdisruption75!=2 | mothfamdisruption75!=3 | fathfamdisruption75!=-3 | fathfamdisruption75!=-1 | fathfamdisruption75!=2 | fathfamdisruption75!=3)
+replace famdisruption75=2 if mothfamdisruption75==2 | fathfamdisruption75==2 & (mothfamdisruption75!=-3 | mothfamdisruption75!=-1 | mothfamdisruption75!=1 | mothfamdisruption75!=3 | fathfamdisruption75!=-3 | fathfamdisruption75!=-1 | fathfamdisruption75!=1 | fathfamdisruption75!=3)
+replace famdisruption75=3 if mothfamdisruption75==3 | fathfamdisruption75==3 & (mothfamdisruption75!=-3 | mothfamdisruption75!=-1 | mothfamdisruption75!=1 | mothfamdisruption75!=2 | fathfamdisruption75!=-3 | fathfamdisruption75!=-1 | fathfamdisruption75!=1 | fathfamdisruption75!=2)
+replace famdisruption75=1 if mothfamdisruption75==1 & fathfamdisruption75==1
+replace famdisruption75=2 if mothfamdisruption75==2 & fathfamdisruption75==2
+replace famdisruption75=3 if mothfamdisruption75==3 & fathfamdisruption75==3
+replace famdisruption75=4 if (mothfamdisruption75==1 & fathfamdisruption75==2) | (mothfamdisruption75==2 & fathfamdisruption75==1)
+replace famdisruption75=5 if (mothfamdisruption75==1 & fathfamdisruption75==3) | (mothfamdisruption75==3 & fathfamdisruption75==1)
+replace famdisruption75=6 if (mothfamdisruption75==2 & fathfamdisruption75==3) | (mothfamdisruption75==3 & fathfamdisruption75==2)
+label de famdisruption75 1"Death of mum and dad" 2"divorced" 3"other situation" 4"Death and divorce" 5"Death & other" 6"divorce & other", modify
+label values famdisruption75 famdisruption75
+label variable famdisruption75 "Changes in Family Situation - Family Disruption"
+
+gen famdisruption75=mothfamdisruption75
+replace famdisruption75=1 if fathfamdisruption75==1 & (mothfamdisruption75==3 | mothfamdisruption75==.)
+replace famdisruption75=2 if fathfamdisruption75==2 & (mothfamdisruption75==3 | mothfamdisruption75==.)
+replace famdisruption75=3 if fathfamdisruption75==3 & mothfamdisruption75==.
+replace famdisruption75=4 if mothfamdisruption75==-1 & fathfamdisruption75==-1
+replace famdisruption75=5 if mothfamdisruption75==-1 & famdisruption75!=4
+replace famdisruption75=6 if fathfamdisruption75==-1 & famdisruption75!=4
+replace famdisruption75=. if famdisruption75<0
+label de famdisruption75 1"Death of Mum or Dad" 2"Divorce" 3"Other" 4"Natural Mother & Father" 5"only natural Mother" 6"only natural Father", modify
+label values famdisruption75 famdisruption75
+label variable famdisruption "Changes in Family Situation - Family Disruption"
+gen famdisruptionage75=mothfamdisrage75
+replace famdisruptionage75=1 if fathfamdisrage75==1 & mothfamdisrage75==.
+replace famdisruptionage75=2 if fathfamdisrage75==2 & mothfamdisrage75==.
+replace famdisruptionage75=3 if fathfamdisrage75==3 & mothfamdisrage75==.
+replace famdisruptionage75=4 if fathfamdisrage75==4 & mothfamdisrage75==.
+replace famdisruptionage75=5 if fathfamdisrage75==5 & mothfamdisrage75==.
+label variable famdisruptionage75 "Age at Changes in Family Situation (YR)- Family Disruption"
+*/
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+/*Qualification - Education - Lifelong Learning*/
+
+********************************************************************************
+
+/*Qualification*/
+
+********************************************************************************
+
+/*3833-Twenty-Six-Year Follow-Up, 1996*/
+
+clear
+use "N:\British Cohort Study\UK_data\3833-Twenty-Six-Year Follow-Up, 1996\stata9\bcs96x.dta" 
+
+keep bcsid b960129 b960131 b960132 b960264 hqual26 lefted26 leftedg school26
+*keep bcsid b960129-b960223 b960264 q5a01-q5b12 cse1-hqual26d qual2a-manyyts
+numlabel _all, add
+
+tab b960131 b960264, m
+tab b960132 b960131, m
+
+replace  b960132=-10 if b960131==1 | (b960264==1 & (b960132==-8 | b960132==.))
+label de stillinftedu -8"Inappropriate Answer" -10"still in Full-Time education"
+label values  b960132 stillinftedu
+
+tab b960132 b960264, m
+
+rename b960132 leftftedu96
+
+tab leftftedu96 lefted26, m
+
+replace leftftedu96=lefted26 if (leftftedu96==-8 | leftftedu96==.) & (lefted26!=. & lefted26!=-1)
+
+tab leftftedu96 lefted26, m
+
+drop b960131 b960264 lefted26
+
+numlabel _all, add
+
+save "Qualification1996", replace
+
+********************************************************************************
+
+/*5558-Twenty-Nine-Year Follow-Up, 1999-2000*/
+*Dokument: user_guide_1999-2000_vol_2_capi_documentation.pdf
+*p.94 (108)
+
+clear
+use "N:\British Cohort Study\UK_data\5558-Twenty-Nine-Year Follow-Up, 1999-2000\stata9_se\bcs2000.dta" 
+
+keep bcsid  agelfte2 actagel2  furthed2 lftmore2 agelfted furthed lftmored /*edqsub-mainneet edqtyp01*/
+numlabel _all, add
+
+replace furthed2=furthed if furthed2==.
+drop furthed
+
+replace lftmore2=lftmored if lftmore2==.
+drop lftmored
+
+replace agelfte2=agelfted if agelfte2==.
+drop agelfted
+
+tab	actagel2 agelfte2, m
+
+replace actagel2=-10 if agelfte2==2
+
+rename actagel2 actagel2_00
+label de actagel -1"Not applicable" -10"still in Full-Time education"
+label values  actagel2_00 actagel
+
+tab lftmore2 furthed2, m
+
+gen ac=lftmore2 - actagel2_00
+tab ac
+drop ac
+
+tab lftmore2 actagel2_00, m
+
+gen leftftedu00=.
+replace leftftedu00=lftmore2 if lftmore2>=12 & lftmore2<=40
+replace leftftedu00=actagel2_00 if (actagel2_00>=12 & actagel2_00<=40) & leftftedu00==.
+replace leftftedu00=-10 if actagel2_00==-10
+label de leftftedu -10"still in Full-Time education"
+label values leftftedu00 leftftedu
+label variable leftftedu00 "merge of lftmore2 & actagel2_00 (if lftmore2 is missing)"
+
+tab leftftedu00, m
+
+save "Qualification2000", replace
+
+clear
+use "N:\British Cohort Study\UK_data\5558-Twenty-Nine-Year Follow-Up, 1999-2000\stata9_se\bcs6derived.dta" 
+
+rename BCSID bcsid
+keep bcsid HIACA00 - HINVQ00
+merge 1:1 bcsid using "Qualification2000"
+
+numlabel _all, add
+
+drop _merge
+
+save "Qualification2000", replace
+
+********************************************************************************
+
+/*5585-Thirty-Four-Year Follow-Up, 2004-2005*/
+*Document: bcs_2004_follow-up_capi_questionaire.pdf
+*p.78 (88)
+
+clear
+use "N:\British Cohort Study\UK_data\5585-Thirty-Four-Year Follow-Up, 2004-2005\stata9_se\bcs_2004_followup.dta"
+
+keep bcsid b7agele2 b7actal2 b7furtd2 b7lftme2 /*bd7hq5-bd7hgvstud*/
+numlabel _all, add
+
+replace b7actal2=-10 if b7agele2==2
+
+rename b7actal2 actagel2_04
+label de actagel -1"Not applicable" -10"still in Full-Time education"
+label values  actagel2_04 actagel
+
+gen leftftedu04=.
+replace leftftedu04=b7lftme2 if b7lftme2>=12 & b7lftme2<=40
+replace leftftedu04=actagel2_04 if (actagel2_04>=12 & actagel2_04<=40) & leftftedu04==.
+replace leftftedu04=-10 if actagel2_04==-10
+label de leftftedu -10"still in Full-Time education"
+label values leftftedu04 leftftedu
+label variable leftftedu04 "merge of lftmore2 & actagel2_04 (if lftmore2 is missing)"
+
+tab leftftedu04, m
+
+save "Qualification2004", replace
+
+clear
+use "N:\British Cohort Study\UK_data\5585-Thirty-Four-Year Follow-Up, 2004-2005\stata9_se\bcs7derived.dta" 
+
+rename BCSID bcsid
+keep bcsid BD7ACHQ1 - BD7HNVQ
+merge 1:1 bcsid using "Qualification2004"
+
+numlabel _all, add
+
+drop _merge
+
+save "Qualification2004", replace
+
+********************************************************************************
+
+/*6557-Thirty-Eight-Year Follow-Up, 2008-2009*/
+*Document: bcs_2008_folow-up_cati_questionaire.pdf
+*p.115 (123)
+
+clear
+use "N:\British Cohort Study\UK_data\6557-Thirty-Eight-Year Follow-Up, 2008-2009\stata9_se\bcs_2008_followup.dta"
+
+keep bcsid b8agele2 b8actal2 b8furtd2 b8lftme2/*b8anyqul b8whqu01-b8whqu22 b8numge1 b8ewh001-b8efe015 b8numge2-b8efe285 bd8achq1 bd8anvq1 bd8aghm1 bd8vnvq1*/
+numlabel _all, add
+
+replace b8actal2=-10 if b8agele2==2
+
+rename b8actal2 actagel2_08
+label de actagel -1"Not applicable" -10"still in Full-Time education"
+label values  actagel2_08 actagel
+
+gen leftftedu08=.
+replace leftftedu08=b8lftme2 if b8lftme2>=12 & b8lftme2<=40
+replace leftftedu08=actagel2_08 if (actagel2_08>=12 & actagel2_08<=40) & leftftedu08==.
+replace leftftedu08=-10 if actagel2_08==-10
+label de leftftedu -10"still in Full-Time education"
+label values leftftedu08 leftftedu
+label variable leftftedu08 "merge of lftmore2 & actagel2_04 (if lftmore2 is missing)"
+
+tab leftftedu08, m
+
+save "Qualification2008", replace
+
+clear
+use "N:\British Cohort Study\UK_data\6557-Thirty-Eight-Year Follow-Up, 2008-2009\stata9_se\bcs8derived.dta" 
+
+rename BCSID bcsid
+keep bcsid BD8ACHQ1 - BD8HNVQ
+merge 1:1 bcsid using "Qualification2008"
+
+numlabel _all, add
+
+drop _merge
+
+save "Qualification2008", replace
+
+********************************************************************************
+
+/*merge Qualification-datasets*/
+
+clear
+use "Qualification2008"
+merge 1:1 bcsid using "Qualification2004"
+rename _merge merge0408
+
+merge 1:1 bcsid using "Qualification2000"
+rename _merge merge000408
+
+merge 1:1 bcsid using "Qualification1996"
+
+tab actagel2_00 actagel2_08, m
+tab actagel2_00 actagel2_04, m
+tab actagel2_04 actagel2_08, m
+
+gen ACTAGEL=.
+replace ACTAGEL=actagel2_00 if actagel2_00>=0
+replace ACTAGEL=-2 if actagel2_00==-10
+replace ACTAGEL=actagel2_04 if ACTAGEL==. & actagel2_04>=0
+replace ACTAGEL=-3 if actagel2_04==-10
+replace ACTAGEL=actagel2_08 if ACTAGEL==. & actagel2_08>=0
+replace ACTAGEL=-4 if actagel2_08==-10
+label de ACTAGEL -1"Not applicable" -2"2000 - still in Full-Time education" -3"2004 - still in Full-Time education" -4"2008 - still in Full-Time education"
+label values  ACTAGEL ACTAGEL
+label variable ACTAGEL "Age when first left full-time (continuous) education"
+
+tab ACTAGEL, m
+
+tab ACTAGEL actagel2_00, m
+tab ACTAGEL actagel2_04, m
+tab ACTAGEL actagel2_08, m
+
+tab furthed2 b7furtd2, m
+tab furthed2 b8furtd2, m
+tab b7furtd2 b8furtd2, m
+
+gen FURTHED=.
+replace FURTHED=furthed2
+replace FURTHED=b7furtd2 if FURTHED==.
+replace FURTHED=b8furtd2 if FURTHED==.
+label de FURTHED -2"Still in continuous ft edu" -1"Item Not applicable" 1"Yes" 2"No"
+label values  FURTHED FURTHED
+label variable FURTHED "Whether Started Another Full-Time Education Period (within 3years of ending continuous ft edu)"
+
+numlabel _all, add
+
+tab FURTHED, m
+
+tab FURTHED furthed2, m
+tab FURTHED b7furtd2, m
+tab FURTHED b8furtd2, m
+
+tab ACTAGEL FURTHED, m
+replace FURTHED=-2 if (FURTHED==-1 | FURTHED==.) & ACTAGEL<=-2
+tab ACTAGEL FURTHED, m
+tab FURTHED, m
+
+tab lftmore2 b7lftme2, m /*The filter in the questionaire did not work*/
+tab lftmore2 b8lftme2, m
+tab b7lftme2 b8lftme2, m
+/*
+gen LFTMORED=.
+replace LFTMORED=lftmore2
+replace LFTMORED=b7lftme2
+replace LFTMORED=b8lftme2
+
+merge Qualification Qualification1996
+*/
+
+drop b8agele2 actagel2_08 b8furtd2 b8lftme2 leftftedu08 b7agele2 actagel2_04 b7furtd2 b7lftme2 leftftedu04 merge0408 agelfte2 actagel2_00 furthed2 lftmore2 leftftedu00 merge000408 _merge
+
+tab HIACA00 BD7HACHQ, m
+tab BD7HACHQ BD8HACHQ, m
+
+gen qualaca=.
+replace qualaca=BD8HACHQ
+replace qualaca=BD7HACHQ if qualaca==.
+replace qualaca=HIACA00 if qualaca==.
+label variable qualaca "Highest Academic Qualification"
+label de qualaca 0"no academic qualification" 1"GCSE D-E" 2"CSEs2-5, other scotisch Quals" 3"GCSE A-C, good O levels, Scot Standards/Intermediate" 4"AS Levels or 1 A Level / Scot Intermediate 2" 5"2+ A Levels, Scot Higher/6th" 6"Diploma" 7"Degree, PGCE, Other Level Degree qual" 8"Higher Degree"
+label values qualaca qualaca
+replace qualaca=. if qualaca==-9
+
+tab qualaca, m
+tab HIACA00 qualaca, m
+tab BD7ACHQ1 qualaca, m
+tab BD8HACHQ qualaca, m
+
+tab NVQACA00 BD7HANVQ, m /*BD7HANVQ have other label names - I do not know wether the names have the same meaning -  Mabey are the label values wrong in the dataset 2004*/
+tab BD7HANVQ BD8HANVQ, m
+
+gen qualnvqaca=.
+replace qualnvqaca=BD8HANVQ
+replace qualnvqaca=BD7HANVQ if qualnvqaca==.
+replace qualnvqaca=NVQACA00 if qualnvqaca==.
+label variable qualnvqaca "Highest NVQ level from an Acadamic Qualification"
+label de qualnvqaca 0"None (No academic qualification)" 1"NVQ1 level (GCSE D-E)" 2"NVQ2 level (other scotisch Quals)" 3"NVQ3 level (GCSE A-C, Scot Standards/Intermediate)" 4"NVQ4 level (AS Levels or 1 A Level / Scot Intermediate 2)" 5"NVQ5 level (2+ A Levels, Scot Higher/6th)" 
+label values qualnvqaca qualnvqaca
+replace qualnvqaca=. if qualnvqaca==-9
+
+tab qualnvqaca, m
+tab NVQACA00 qualnvqaca, m
+tab BD7HANVQ qualnvqaca, m
+tab BD8HANVQ qualnvqaca, m
+
+tab HIVOC00 BD7HVNVQ, m
+tab BD7HVNVQ BD8HVNVQ, m
+
+gen qualnvqvoc=.
+replace qualnvqvoc=BD8HVNVQ
+replace qualnvqvoc=BD7HVNVQ if qualnvqvoc==.
+replace qualnvqvoc=HIVOC00 if qualnvqvoc==.
+label variable qualnvqvoc "Highest NVQ level from an Vocational Qualification"
+label de NVQ 0"None" 1"NVQ1 level" 2"NVQ2 level" 3"NVQ3 level" 4"NVQ4 level" 5"NVQ5 level" 
+label values qualnvqvoc NVQ
+replace qualnvqvoc=. if qualnvqvoc==-9
+
+tab qualnvqvoc, m
+tab HIVOC00 qualnvqvoc, m
+tab BD7HVNVQ qualnvqvoc, m
+tab BD8HVNVQ qualnvqvoc, m
+
+tab HINVQ00 BD7HNVQ, m
+tab BD7HNVQ BD8HNVQ, m
+
+gen qualnvqacvo=.
+replace qualnvqacvo=BD8HNVQ
+replace qualnvqacvo=BD7HNVQ if qualnvqacvo==.
+replace qualnvqacvo=HINVQ00 if qualnvqacvo==.
+label variable qualnvqacvo "Highest NVQ level from an Vocational or Vocational Qualification"
+label values qualnvqacvo NVQ
+replace qualnvqacvo=. if qualnvqacvo==-9
+
+tab qualnvqacvo, m
+tab HINVQ00 qualnvqacvo, m
+tab BD7HNVQ qualnvqacvo, m
+tab BD8HNVQ qualnvqacvo, m
+
+drop BD8ACHQ1 BD8ANVQ1 BD8VNVQ1 BD8NVQ1 BD7ACHQ1 BD7ANVQ1 BD7VNVQ1 BD7NVQ1 
+
+tab qualnvqaca qualnvqacvo, m
+tab qualnvqvoc qualnvqacvo, m
+
+replace qualnvqacvo=qualnvqaca if qualnvqaca>qualnvqacvo & qualnvqaca!=.
+replace qualnvqacvo=qualnvqvoc if qualnvqvoc>qualnvqacvo & qualnvqvoc!=.
+
+numlabel _all, add
+
+save "Qualification", replace
+
+********************************************************************************
+
+/*Qualification Wide-Formate*/
+
+clear
+use "Qualification"
+
+drop BD8HACHQ BD8HANVQ BD8HVNVQ BD8HNVQ BD7HACHQ BD7HANVQ BD7HVNVQ BD7HNVQ HIACA00 NVQACA00 HIVOC00 HINVQ00 hqual26 leftedg school26 leftftedu96 b960129 
+
+save "Qualification_wide", replace
+
+********************************************************************************
+
+/*Qualification Long-Formate*/
+
+clear
+use "Qualification"
+
+drop qualaca qualnvqaca qualnvqvoc qualnvqacvo b960129 leftftedu96 school26 hqual26 leftedg
+
+rename BD8HACHQ qualaca3
+rename BD8HANVQ qualnvqaca3
+rename BD8HVNVQ qualnvqvoc3
+rename BD8HNVQ qualnvqacvo3
+rename BD7HACHQ qualaca2
+rename BD7HANVQ qualnvqaca2
+rename BD7HVNVQ qualnvqvoc2
+rename BD7HNVQ qualnvqacvo2
+rename HIACA00 qualaca1
+rename NVQACA00 qualnvqaca1
+rename HIVOC00 qualnvqvoc1
+rename HINVQ00 qualnvqacvo1
+
+gen id=_n
+reshape long qualaca qualnvqaca qualnvqvoc qualnvqacvo, i(id)
+sort bcsid
+
+label de _j 1"up to 2000" 2"up to 2004" 3"up to 2008"
+label values _j _j
+
+save "Qualification_long", replace
+
+********************************************************************************
+********************************************************************************
+
+/*
+
+/*4715-Twenty-One-Year Sample Survey, 1992*/
+
+clear
+use "N:\British Cohort Study\UK_data\4715-Twenty-One-Year Sample Survey, 1992\stata8\bcs21yearsample.dta" 
+
+keep bcsid hqual16 hqual21
+numlabel _all, add
+
+save "Qualification1992", replace 
+
+********************************************************************************
+
+/*3535-Sixteen-Year Follow-Up, 1986*/
+
+clear
+use "N:\British Cohort Study\UK_data\3535-Sixteen-Year Follow-Up, 1986\stata9_se\bcs7016x.dta"
+
+keep bcsid jb6 - jb6aj3 jb15 - jb15ap3 l4_1
+numlabel _all, add
+
+********************************************************************************
+
+/*Education*/
+
+********************************************************************************
+
+/*3535-Sixteen-Year Follow-Up, 1986*/
+
+clear
+use "N:\British Cohort Study\UK_data\3535-Sixteen-Year Follow-Up, 1986\stata9_se\bcs7016x.dta"
+
+keep bcsid c6_19 t1a_1 t1b_1 t2a1_1 t2a1_2 t2a2_1 t2a2_2 t2b1_1 t2b1_2 t2b2_1 t2b2_2 t2c1_1 t2c1_2 t2c2_1 t2c2_2 t2d1_1 t2d1_2 t2d2_1 t2d2_2 t2e1_1 t2e1_2 t2e2_1 t2e2_2 t2f1_1 t2f1_2 t2f2_1 t2f2_2 t2g1_1 t2g1_2 t2g2_1 t2g2_2 t2h1_1 t2h1_2 t2h2_1 t2h2_2 t2i1_1 t2i1_2 t2i2_1 t2i2_2 t2j1_1 t2j1_2 t2j2_1 t2j2_2 t2k1_1 t2k1_2 t2k2_1 t2k2_2 t2l1_1 t2l1_2 t2l2_1 t2l2_2 t2m1_1 t2m1_2 t2m2_1 t2m2_2 t2n1_1 t2n1_2 t2n2_1 t2n2_2 t2c1_1 t2c1_2 t2c2_1 t2c2_2
+
+save "Education1986", replace
+
+********************************************************************************
+
+
+*2012
+
+/*
+clear
+use "N:\British Cohort Study\UK_data\7473-Forty-Two-Year Follow-Up, 2012\stata11\bcs70_2012_qualifications.dta" 
+
+keep BCSID B9QUALID B9QUALTP B9WHQUID B9EWHEN B9EFTPT B9EDEGGR B9BTECLV B9CITYLV B9RSALV B9PITLV B9NVQLV B9GNVQLV B9ONCLV B9HNCLV
+
+save "Qualification2012", replace
+*/
+
+/*
+*Further Information
+
+*bcs70_2012_flatfile
+
+clear
+use "N:\British Cohort Study\UK_data\7473-Forty-Two-Year Follow-Up, 2012\stata11\bcs70_2012_flatfile.dta" 
+
+keep BCSID B9AGELE - B9PHVCDR
+
+gen bcsid=BCSID
+
+drop BCSID
+
+save "Qualification_Education_section_2012_flatfile", replace
+*/
+
+*/
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+/*Housing tenure & Income*/
+
+********************************************************************************
+
+*1986
+
+clear
+use "N:\British Cohort Study\UK_data\3535-Sixteen-Year Follow-Up, 1986\stata9_se\bcs7016x.dta" 
+
+keep bcsid c6_8 c6_9 of3_1 - of3_7 oe2
+*numlabel _all, add
+
+gen tenure86=.
+replace tenure86=1 if of3_1==1
+replace tenure86=2 if of3_2==1
+replace tenure86=3 if of3_3==1
+replace tenure86=4 if of3_4==1
+replace tenure86=5 if of3_5==1
+replace tenure86=6 if of3_6==1
+replace tenure86=7 if of3_7==1
+label variable tenure "Is accommodiation...?"
+label define tenure 1"owned outright" 2"being bought mort-loan" 3"rented local auth-coun" 4"privat rent (unfurnish)" 5"privat rent (furnish)" 6"tied to occupat of hhold member" 7"another situation"
+label values tenure86 tenure
+tab tenure86, m
+drop of3_1 of3_2 of3_3 of3_4 of3_5 of3_6 of3_7
+
+rename c6_8 tenure86_1
+rename oe2 income86
+rename c6_9 housing86
+*numlabel _all, add
+
+save "tenure_income", replace
+
+********************************************************************************
+
+*1992
+
+clear
+use "N:\British Cohort Study\UK_data\4715-Twenty-One-Year Sample Survey, 1992\stata8\bcs21yearsample.dta" 
+drop if bcsid==""
+
+keep bcsid home21 vc113 /* vc115 vc4a - vc7ab*/ vc9a vc9b /*vc17a - vc18b*/ vc19aa - vc19db job1gp21 job2gp21
+numlabel _all, add
+
+rename vc113 tenure92
+rename home21 tenure92_1
+
+label define jobxgp21 -1"Missing" -2"frequency of pay is 'other period'" -3"frequency of pay is 'refused', 'don't know/can't remeber' or 'other reasons for no details'" -4"frequency of pay is 'no usual amount of pay/vaties'" -5"400 thru highest"
+label values job1gp21 jobxgp21
+label values job2gp21 jobxgp21
+/*
+replace job1gp21=1 if job1gp21>0
+replace job2gp21=1 if job2gp21>0
+tab job1gp21 job2gp21
+*/
+
+gen job1netpay92=.
+replace job1netpay92=vc19ab*7 if (vc19da == 1) & vc19ab>=0
+replace job1netpay92=vc19ab if (vc19da == 2) & vc19ab>=0
+replace job1netpay92=vc19ab/2 if (vc19da == 3) & vc19ab>=0
+replace job1netpay92=(vc19ab*12)/52 if (vc19da == 4) & vc19ab>=0
+replace job1netpay92=(vc19ab*4)/52 if (vc19da == 5) & vc19ab>=0
+replace job1netpay92=(vc19ab*2)/52 if (vc19da == 6) & vc19ab>=0
+replace job1netpay92=vc19ab/52 if (vc19da == 7) & vc19ab>=0
+replace job1netpay92=-2 if (vc19da == 8) & vc19ab>=0
+replace job1netpay92=-3 if (vc19da == 9 | vc19da == 10 | vc19da == 10) & vc19ab>=0
+replace job1netpay92=-4 if (vc19da == 12) & vc19ab>=0
+label variable job1netpay92 "net weekly pay in first job"
+
+gen job2netpay92=.
+replace job2netpay92=vc19bb*7 if (vc19db == 1) & vc19bb>=0
+replace job2netpay92=vc19bb if (vc19db == 2) & vc19bb>=0
+replace job2netpay92=vc19bb/2 if (vc19db == 3) & vc19bb>=0
+replace job2netpay92=(vc19bb*12)/52 if (vc19db == 4) & vc19bb>=0
+replace job2netpay92=(vc19bb*4)/52 if (vc19db == 5) & vc19bb>=0
+replace job2netpay92=(vc19bb*2)/52 if (vc19db == 6) & vc19bb>=0
+replace job2netpay92=vc19bb/52 if (vc19db == 7) & vc19bb>=0
+replace job2netpay92=-2 if (vc19db == 8) & vc19bb>=0
+replace job2netpay92=-3 if (vc19db == 9 | vc19db == 10 | vc19db == 10) & vc19bb>=0
+replace job2netpay92=-4 if (vc19db == 12) & vc19bb>=0
+label variable job2netpay92 "net weekly pay in second job"
+
+label values job1netpay92 jobxgp21
+label values job2netpay92 jobxgp21
+
+gen netpay92=(job1netpay92*52)+(job2netpay92*52)
+replace netpay92=. if netpay92<0
+replace netpay92=job1netpay92*52 if job2netpay92<0 & job1netpay92>=0
+replace netpay92=job2netpay92*52 if job1netpay92<0 & job2netpay92>=0
+label variable netpay92 "net weekly pay - sum of job 1 & 2"
+
+gen gropay92=(job1gp21*52)+(job2gp21*52)
+replace gropay92=. if gropay92<0
+replace gropay92=job1gp21*52 if job2gp21<0 & job1gp21>=0
+replace gropay92=job2gp21*52 if job1gp21<0 & job2gp21>=0
+label variable gropay92 "gross weekly pay - sum of job 1 & 2"
+
+drop  vc9a vc9b vc19aa - vc19db job1gp21 job2gp21
+
+merge 1:1 bcsid using "tenure_income"
+rename _merge merge_86_92
+save "tenure_income", replace
+
+/*
+Codebook:
+
+If Respondent currently Eployed or if Respondent not currently employed but has had a job, refering to their most recent job
+
+If one job only, record all answers under job1. If more than one job, ask about main job first and then do same for the other jobs.
+
+What is you usual gross pay on your pay, that is your pay before any deductions for tax and National insurance, including any overtime, bonus, commission or tips etc. that you usually recieved?
+And What ist your NET pay, that is your pay after deductions?
+--> vc19aa - vc19bb (gross and net Amount) & vc19ca - vc19db (Frequency)
+
+Generate Income per Week
+
+*Gross weekly pay in 1st job.
+compute job1gp21 = -1.
+if (vc19ca = 1) job1gp21 = vc19aa * 7.
+if (vc19ca = 2) job1gp21 = vc19aa.
+if (vc19ca = 3) job1gp21 = vc19aa / 2.
+if (vc19ca = 4) job1gp21 = (vc19aa * 12) / 52.
+if (vc19ca = 5) job1gp21 = (vc19aa * 4) / 52.
+if (vc19ca = 6) job1gp21 = (vc19aa * 2) / 52.
+if (vc19ca = 7) job1gp21 = vc19aa / 52.
+if (vc19ca = 8) job1gp21 = -2.
+if (vc19ca = 9 | vc19ca = 10 | vc19ca = 11) job1gp21 = -3.
+if (vc19ca = 12) job1gp21 = -4.
+execute.
+recode job1gp21 (400 thru highest = -5).
+missing values job1gp21 (-5 thru -1) .
+variable labels job1gp21 'Gross weekly pay in first job'.
+*Gross weekly pay in 2nd job.
+compute job2gp21 = -1.
+if (vc19cb = 1) job2gp21 = vc19ba * 7.
+if (vc19cb = 2) job2gp21 = vc19ba.
+if (vc19cb = 3) job2gp21 = vc19ba / 2.
+if (vc19cb = 4) job2gp21 = (vc19ba * 12) / 52.
+if (vc19cb = 5) job2gp21 = (vc19ba * 4) / 52.
+if (vc19cb = 6) job2gp21 = (vc19ba * 2) / 52.
+if (vc19cb = 7) job2gp21 = vc19ba / 52.
+if (vc19cb = 8) job2gp21 = -2.
+if (vc19cb = 9 | vc19cb = 10 | vc19cb = 11) job2gp21 = -3.
+if (vc19cb = 12) job2gp21 = -4.
+execute.
+missing values job2gp21 (-4 thru -1).
+variable labels job2gp21 'Gross weekly pay in second job'.
+*/
+
+********************************************************************************
+
+*1996
+
+clear
+use "N:\British Cohort Study\UK_data\3833-Twenty-Six-Year Follow-Up, 1996\stata9\bcs96x.dta" 
+
+keep bcsid b960421 q31other b960312 b960318 q19other hrlypay hrlypayc hpaycor wklypay wklypayc hourswk hourswkc hourswg /*b960321 soc camsub empin empchk seg91 rgsc91 isco*/ 
+numlabel _all, add
+
+rename b960421 tenure96
+rename q31other tenure96_1
+
+replace wklypayc=. if wklypayc==-999
+gen netpay96=wklypayc*52
+label variable netpay96 "usual take home pay - estimation about a year"
+sum netpay96
+hist netpay96 if netpay96<=120000
+tab netpay96 if netpay96>120000
+
+drop b960312 b960318 q19other hrlypay hrlypayc hpaycor wklypay wklypayc hourswk hourswkc hourswg
+
+merge 1:1 bcsid using "tenure_income"
+rename _merge merge_86_92_96
+save "tenure_income", replace
+
+/*
+
+19. What is your usual take home pay (after deductions, but including any bonuses or overtime)?
+Please write in the amount and tick one box for period covered
+
+Amount of take home pay (to nearest £): (B960312)
+
+Period pay covers. Please tick one box only (B960318)
+
+Hour Day Week Month Year
+
+Other period L Please say what below
+Q19OTHER - See List of Open-Coded Variables
+
+compute hrlypay=-999.
+if (b960318=1) hrlypay=B960312.
+if (b960318=2) and (hourswkc>7) hrlypay=B960312/7. if (b960318=2) and (hourswkc<=7)
+hrlypay=B960312/hourswkc. if (b960318=3) hrlypay=B960312/hourswkc. if (b960318=4)
+hrlypay=B960312/(4.33*hourswkc). if (b960318=5) hrlypay=B960312/(52*hourswkc). missing
+values hrlypay (-999).
+
+*** COMMENT: THE NEXT FOUR LINES CORRECT FOR UNREALISTICALLY LOW AND HIGH
+EARNINGS. ****
+
+compute hrlypayc=hrlypay.
+if (hrlypay<1) hrlypayc=-999.
+if (hrlypay>100) hrlypayc=-999.
+missing values hrlypayc (-999).
+
+*** COMMENT: THE NEXT LINES CORRECT FOR UNREALISTICALLY HIGH EARNINGS OF SOME
+INDIVIDUALS IN RELATIVELY LOW PAID OCCUPATIONS. ****
+
+COMPUTE hpaycor = hrlypayc .
+IF (hrlypayc > 25 and seg91 > 60) hpaycor = -999. if (seg91 = 13) hpaycor = hrlypayc .
+IF (serial =’02706048’) hpaycor=-999.
+IF (serial =’03821080’) hpaycor=-999.
+IF (serial =’03921057’) hpaycor=-999.
+IF (serial =’04384055’) hpaycor=-999.
+IF (serial =’08106054’) hpaycor=-999.
+IF (serial =’09536070’) hpaycor=-999.
+IF (serial =’10883032’) hpaycor=-999.
+IF (serial =’10905050’) hpaycor=-999.
+IF (serial =’10907000’) hpaycor=-999.
+IF (serial =’11173094’) hpaycor=-999.
+IF (serial =’11829004’) hpaycor=-999.
+IF (serial =’12326071’) hpaycor=-999.
+IF (serial =’14428055’) hpaycor=-999.
+IF (serial =’15693045’) hpaycor=-999.
+IF (serial =’16003148’) hpaycor=-999.
+IF (serial =’16571043’) hpaycor=-999.
+IF (serial =’17235086’) hpaycor=-999.
+IF (serial =’17490021’) hpaycor=-999.
+IF (serial =’03921057’) hpaycor=-999.
+IF (serial =’04074047’) hpaycor=-999.
+IF (serial =’07131028’) hpaycor=-999.
+IF (serial =’12069070’) hpaycor=-999.
+IF (serial =’14725061’) hpaycor=-999. missing values hpaycor (-999).
+
+*** COMMENT: THE NEXT FOUR LINES CORRECT FOR UNREALISTICALLY LOW AND HIGH
+EARNINGS. ****
+
+compute wklypayc=-999.
+if (b960318=1) wklypayc=B960312*hourswkc.
+if (b960318=2) wklypayc=hrlypayc*hourswkc.
+if (b960318=3) wklypayc=B960312.
+if (b960318=4) wklypayc=B960312/4.33.
+if (b960318=5) wklypayc=B960312/52.
+if (wklypayc>1000) wklypayc=-999.
+missing values wklypayc (-999).
+*/
+
+********************************************************************************
+
+*2000
+
+clear
+use "N:\British Cohort Study\UK_data\5558-Twenty-Nine-Year Follow-Up, 1999-2000\stata9_se\bcs2000.dta" 
+
+keep bcsid tenure tenure2 rentfrom freeleas residenc accom cnetpay cnetprd cnetpred cgropay cgroprd cgropred /*ojany2 ojnetpw ojhours ojstatus*/ costhome pnetpay pnetprd pnetoprd pnetpred /*soc iempstat empstat seg sc*/
+numlabel _all, add
+
+rename residenc residenc00
+rename accom accom00
+rename costhome costhome00
+rename rentfrom rentom00
+rename freeleas freeleas00
+
+rename tenure2 tenure00
+replace tenure00=1 if tenure==1 & (tenure00==9 | tenure00==.)
+replace tenure00=2 if tenure==2 & (tenure00==9 | tenure00==.)
+replace tenure00=3 if tenure==3 & (tenure00==9 | tenure00==.)
+replace tenure00=4 if tenure==4 & (tenure00==9 | tenure00==.)
+replace tenure00=5 if tenure==5 & (tenure00==9 | tenure00==.)
+replace tenure00=7 if tenure==7 & (tenure00==9 | tenure00==.)
+drop tenure
+
+gen netpay00=.
+replace netpay00=cnetpay*52 if (cnetprd==1 | cnetpred==1) & cnetpay>=0
+replace netpay00=cnetpay*26 if (cnetprd==2 | cnetpred==2) & cnetpay>=0
+replace netpay00=cnetpay*13 if (cnetprd==3 | cnetpred==3) & cnetpay>=0
+replace netpay00=cnetpay*12 if (cnetprd==4 | cnetpred==4) & cnetpay>=0
+replace netpay00=cnetpay*1 if (cnetprd==5 | cnetpred==5) & cnetpay>=0
+replace netpay00=cnetpay*6 if cnetpred==11 & cnetpay>=0
+replace netpay00=cnetpay*4 if cnetpred==15 & cnetpay>=0
+label variable netpay00 "Last time total take home pay - estimation about a year"
+sum netpay00
+hist netpay00 if netpay00<=120000
+tab netpay00 if netpay00>120000
+/*
+tab cnetpay cnetprd if netpay00==.
+gen netpay00_2=netpay00/52
+tab cnetpay if netpay00==.
+tab cnetprd if netpay00==.
+*/
+
+gen gropay00=.
+replace gropay00=cgropay*52 if (cgroprd==1 | cgropred==1) & cgropay>=0
+replace gropay00=cgropay*26 if (cgroprd==2 | cgropred==2) & cgropay>=0
+replace gropay00=cgropay*13 if (cgroprd==3 | cgropred==3) & cgropay>=0
+replace gropay00=cgropay*12 if (cgroprd==4 | cgropred==4) & cgropay>=0
+replace gropay00=cgropay*1 if (cgroprd==5 | cgropred==5) & cgropay>=0
+replace gropay00=cgropay*6 if cgropred==11 & cgropay>=0
+replace gropay00=cgropay*4 if cgropred==15 & cgropay>=0
+label variable gropay00 "Last time gross pay before deductions - estimation about a year"
+
+gen pnetpay00=.
+replace pnetpay00=pnetpay*52 if (pnetprd==1 | pnetpred==1) & pnetpay>=0
+replace pnetpay00=pnetpay*26 if (pnetprd==2 | pnetpred==2) & pnetpay>=0
+replace pnetpay00=pnetpay*13 if (pnetprd==3 | pnetpred==3) & pnetpay>=0
+replace pnetpay00=pnetpay*12 if (pnetprd==4 | pnetpred==4) & pnetpay>=0
+replace pnetpay00=pnetpay*1 if (pnetprd==5 | pnetpred==5) & pnetpay>=0
+replace pnetpay00=pnetpay*17.3333 if pnetpred==6 & pnetpay>=0
+label variable pnetpay00 "CMs partner Last time total take home pay - estimation about a year"
+sum netpay00
+
+drop cnetpay cnetprd cnetpred cgropay cgroprd cgropred pnetpay pnetpred pnetprd pnetoprd
+
+merge 1:1 bcsid using "tenure_income"
+rename _merge merge_86_92_96_00
+save "tenure_income", replace
+
+/*
+CNetPay : 1..999999
+
+| : | Last time you were paid, what was your total take home pay - that is after all deductions
+for tax, National Insurance, union dues, pension and so on, but including overtime,
+bonuses, commission and tips?
+| : | IF CM HAS MORE THE ONE JOB, ASK FOR MAIN JOB ONLY. ENTER AMOUNT TO
+NEAREST .
+| : | ACCEPT ESTIMATES IF NECESSARY.
+IF (CNetPay = RESPONSE) THEN
+
+CNetPrd
+
+| : | | How long a period did that pay cover?
+| : | | (1) WEEK "...One week"
+| : | | (2) FortNiht "A fortnight"
+| : | | (3) Week4 "Four weeks"
+| : | | (4) MONTH "A calendar month"
+| : | | (5) YEAR "A year or"
+| : | | (6) Other "Some other period? (SPECIFY AT NEXT QUESTION)"
+IF (CNetPrd = Other) THEN
+
+CGROPAY : 1..999999
+
+| : | And, last time you were paid, what was your gross pay before deductions?
+| : | IF CM HAS MORE THAN ONE JOB, ASK FOR MAIN JOB ONLY. ENTER AMOUNT TO
+NEAREST.
+| : | ACCEPT ESTIMATES IF NECESSARY.
+IF (CGROPAY = RESPONSE) THEN
+
+CGroPrd
+
+| : | | How long a period did that pay cover?
+| : | | (1) WEEK "...One week"
+| : | | (2) FortNiht "A fortnight"
+| : | | (3) Week4 "Four weeks"
+| : | | (4) MONTH "A calendar month"
+| : | | (5) YEAR "A year or"
+| : | | (6) Other "Some other period? (SPECIFY AT NEXT QUESTION)"
+IF (CGroPrd = Other) THEN
+
+OJAny2 : YES/NO
+
+| : | Do you receive any regular income from paid work at all - I mean from odd jobs, casual
+work and so on?
+| : | Treat as regular if at least once a month.
+ENDIF
+IF ((OJAny1 = Yes) OR (OJAny2 = Yes)) THEN
+
+OJNetPW : 1..9999
+
+| : | After tax and any other deductions, how much take-home pay do you usually get per week
+for this (other) work?
+| : | ENTER AMOUNT TO THE NEAREST .
+| : | IF INCOME IS RECEIVED LESS THAN ONCE A WEEK YOU WILL HAVE TO GET CM
+TO ESTIMATE THE USUAL WEEKLY EQUIVALENT.
+IF (OJNetPW = RESPONSE) THEN
+
+OJHours : 1..99
+
+| : | | How many hours a week do you usually work for that pay, excluding meal breaks, but
+including paid overtime?
+
+OJStatus
+| : | | In this work are you an employee or self-employed?
+| : | | (1) Employee
+| : | | (2) SelfEmp "Self-employed"
+ENDIF
+IF (CStrtJob > ChkDate) THEN
+
+PNetPay : 1..9999999
+
+| | : | What is ^his/her usual total take home pay - that is after all deductions for tax, National
+Insurance, union dues, pension and so on, but including overtime, bonuses, commission
+and tips?
+| | : | THIS IS MOST LIKELY TO BE AN ESTIMATE IF PROVIDED BY THE CM, BUT
+PARTNER MAY ANSWER IF PRESENT.
+IF (PNetPay = RESPONSE) THEN
+
+PNetPrd
+
+| | : | | How long a period did that pay cover?
+| | : | | (1) WEEK "...One week"
+| | : | | (2) FortNiht "A fortnight"
+| | : | | (3) Week4 "Four weeks"
+| | : | | (4) MONTH "A calendar month"
+| | : | | (5) YEAR "A year or"
+| | : | | (6) Other "Some other period? (SPECIFY AT NEXT QUESTION)"
+IF (PNetPrd = Other) THEN
+
+*/
+
+********************************************************************************
+
+*2004
+
+clear
+use "N:\British Cohort Study\UK_data\5585-Thirty-Four-Year Follow-Up, 2004-2005\stata9_se\bcs_2004_followup.dta"
+
+keep bcsid b7ten2 b7ten b7accom b7freeas /*b7hmb - bd7hom19 b7ojany1 b7ojany2 b7ojnetw b7ojhous b7ojstus*/ b7cnetpy b7cnetpd b7cgropy b7cgropd /*b7ojnetw*/ b7pnetpy b7pnetpd b7resinc b7hsetye b7rentom /*b7soc90 b7sc b7seg b7sflag b7finnow*/
+numlabel _all, add
+
+rename b7resinc residenc04
+rename b7accom accom04
+rename b7freeas freeleas04
+rename b7rentom rentom04
+rename b7hsetye actyp04
+
+rename b7ten2 tenure04
+replace tenure04=1 if b7ten==1 & tenure04<0
+replace tenure04=4 if b7ten==4 & tenure04<0
+replace tenure04=5 if b7ten==5 & tenure04<0
+replace tenure04=7 if b7ten==7 & tenure04<0
+drop b7ten
+
+gen netpay04=.
+replace netpay04=b7cnetpy*52 if b7cnetpd==1 & b7cnetpy>=0
+replace netpay04=b7cnetpy*26 if b7cnetpd==2 & b7cnetpy>=0
+replace netpay04=b7cnetpy*13 if b7cnetpd==3 & b7cnetpy>=0
+replace netpay04=b7cnetpy*12 if b7cnetpd==4 & b7cnetpy>=0
+replace netpay04=b7cnetpy*1 if b7cnetpd==5 & b7cnetpy>=0
+label variable netpay04 "Last time total take home pay - estimation about a year"
+sum netpay04
+hist netpay04 if netpay04<=120000
+tab netpay04 if netpay04>120000
+/*
+tab b7cnetpy b7cnetpd if netpay04==.
+gen netpay04_2=netpay04/52
+tab b7cnetpy if netpay04==.
+tab b7cnetpd if netpay04==.
+*/
+
+gen gropay04=.
+replace gropay04=b7cgropy*52 if b7cgropd==1 & b7cgropy>=0
+replace gropay04=b7cgropy*26 if b7cgropd==2 & b7cgropy>=0
+replace gropay04=b7cgropy*13 if b7cgropd==3 & b7cgropy>=0
+replace gropay04=b7cgropy*12 if b7cgropd==4 & b7cgropy>=0
+replace gropay04=b7cgropy*1 if b7cgropd==5 & b7cgropy>=0
+label variable gropay04 "Last time gross pay before deductions - estimation about a year"
+
+gen pnetpay04=.
+replace pnetpay04=b7pnetpy*52 if b7pnetpd==1 & b7pnetpy>=0
+replace pnetpay04=b7pnetpy*26 if b7pnetpd==2 & b7pnetpy>=0
+replace pnetpay04=b7pnetpy*13 if b7pnetpd==3 & b7pnetpy>=0
+replace pnetpay04=b7pnetpy*12 if b7pnetpd==4 & b7pnetpy>=0
+replace pnetpay04=b7pnetpy*1 if b7pnetpd==5 & b7pnetpy>=0
+label variable pnetpay04 "CMs partner Last time total take home pay - estimation about a year"
+sum netpay04
+
+drop b7cnetpy b7cnetpd b7cgropy b7cgropd b7pnetpy b7pnetpd
+
+merge 1:1 bcsid using "tenure_income"
+rename _merge merge_86_92_96_00_04
+save "tenure_income", replace
+
+/*
+CNETPAY
+
+| [ Variables for this question are held in B7CNETPY ]
+| Last time you were paid, what was your total take home pay - that is after all deductions for
+| tax, National Insurance, union dues, pension and so on, but including overtime, bonuses,
+| commission and tips?
+| INTERVIEWER: IF CM HAS MORE THE ONE JOB, ASK FOR MAIN JOB ONLY. ENTER AMOUNT TO
+| NEAREST £. ACCEPT ESTIMATES IF NECESSARY.
+| Range: 1..999999
+|
+| IF has answered his / her total take-home pay [CNetPay = RESPONSE]
+| |
+
+CNETPRD
+
+| | [ Variables for this question are held in B7CNETPD ]
+| | How long a period did that pay cover?
+| | 1 One week
+| | 2 A fortnight
+| | 3 Four weeks
+| | 4 A calendar month
+| | 5 A year
+| | 6 Some other period (SPECIFY AT NEXT QUESTION)
+| |
+| | IF take-home pay covered some other period [CNetPrd = 6]
+| | |
+
+CNETOPRD
+
+| | | What period did it cover?
+| | | INTERVIEWER: ENTER DETAIL OF OTHER NET PAY PERIOD
+| | | Open
+| | |
+| END OF FILTERS
+|
+
+CGROPAY
+
+| [ Variables for this question are held in B7CGROPY ]
+| And, last time you were paid, what was your gross pay before deductions?
+| INTERVIEWER: IF CM HAS MORE THE ONE JOB, ASK FOR MAIN JOB ONLY. ENTER AMOUNT TO
+| NEAREST. ACCEPT ESTIMATES IF NECESSARY.
+| Range: 1..999999
+|
+| IF has answered his / her total gross pay [CGROPAY = RESPONSE]
+| |
+
+CGROPRD
+
+| | [ Variables for this question are held in B7CGROPD ]
+| | How long a period did that pay cover?
+| | 1 One week
+| | 2 A fortnight
+| | 3 Four weeks
+| | 4 A calendar month
+| | 5 A year
+| | 6 Some other period (SPECIFY AT NEXT QUESTION)
+| |
+| | CHECK BEmploy1
+| |
+| | IF gross pay covered some other period [CGroPrd = 6]
+| | |
+
+CGROOPRD
+
+| | | What period did it cover?
+| | | INTERVIEWER: ENTER DETAIL OF OTHER GROSS PAY PERIOD
+| | | Open
+| | |
+| END OF FILTERS
+
+OJANY2
+
+| [ Variables for this question are held in B7OJANY2 ]
+| Do you receive any regular income from paid work at all - I mean from odd jobs, casual work
+| and so on?
+| INTERVIEWER: TREAT AS REGULAR IF AT LEAST ONCE A MONTH.
+| 1 Yes
+| 2 No
+|
+END OF FILTER
+IF receives any (other) regular income from paid work [OJAny1 = 1 OR OJAny2 = 1]
+|
+
+OJNETPW
+
+| [ Variables for this question are held in B7OJNETW ]
+| After tax and any other deductions, how much take-home pay do you usually get per week
+| for this other work?
+| INTERVIEWER: ENTER AMOUNT TO THE NEAREST £. IF INCOME IS RECEIVED LESS THAN ONCE
+| A WEEK YOU WILL HAVE TO GET CM TO ESTIMATE THE USUAL WEEKLY EQUIVALENT.
+| Range: 1..9999
+|
+| IF has answered the weekly take-home pay from this job [OJNetPW = RESPONSE]
+| |
+
+OJHOURS
+
+| | [ Variables for this question are held in B7OJHOUS ]
+| | How many hours a week do you usually work for that pay, excluding meal breaks, but
+| | including paid overtime?
+| | Range: 1..99
+| |
+
+OJSTATUS
+
+| | [ Variables for this question are held in B7OJSTUS ]
+| | In this work are you an employee or self-employed?
+| | 1 Employee
+| | 2 Self-employed
+| |
+END OF FILTERS
+
+PNETPAY
+
+| | [ Variables for this question are held in B7PNETPY ]
+| | What is [^his / her] usual total take home pay - that is after all deductions for tax,
+| | National Insurance, union dues, pension and so on, but including overtime, bonuses,
+| | commission and tips?
+| | INTERVIEWER: THIS IS MOST LIKELY TO BE AN ESTIMATE IF PROVIDED BY THE CM, BUT
+| | PARTNER MAY ANSWER IF PRESENT.
+| | Range: 1..9999999
+| |
+| | IF answered partner's / spouse's usual take-home pay [PNetPay = RESPONSE]
+| | |
+
+PNETPRD
+
+| | | [ Variables for this question are held in B7PNETPD ]
+| | | How long a period did that pay cover?
+| | | 1 One week
+| | | 2 A fortnight
+| | | 3 Four weeks
+| | | 4 A calendar month
+| | | 5 A year or
+| | | 6 Some other period (SPECIFY AT NEXT QUESTION)
+| | |
+| | | IF partner's / spouse's take-home pay covered some other period [PNetPrd = 6]
+
+CHECK BEmploy1
+IF has answered period that take-home pay covered AND period that gross pay covered [CNetPrd =
+RESPONSE AND CGroPrd = RESPONSE]
+|
+| IF period that take-home pay covered is different from the period that gross pay covered
+| [CGroPrd <> CNetPrd]
+| |
+| | The period you have entered as covered by CM's last gross pay is different from the
+| | period
+CHECK BEmploy17
+IF gross pay is less than net pay [CNETPAY > CGROPAY]
+|
+| Gross pay must be greater or equal to Net pay. Please amend your answer or suppress this
+| check.
+|
+END CHECK
+*/
+
+********************************************************************************
+
+*2008
+
+clear
+use "N:\British Cohort Study\UK_data\6557-Thirty-Eight-Year Follow-Up, 2008-2009\stata9_se\bcs_2008_followup.dta" 
+
+keep bcsid b8resinc b8ten2 b8accom b8wten b8freeas b8iamtc b8cnetpy b8cnetpd b8cnetwk b8cgropy b8cgropd b8cgrowk b8rentom
+numlabel _all, add
+
+rename b8resinc residenc08
+rename b8accom accom08
+rename b8freeas freeleas08
+rename b8rentom rentom08
+rename b8iamtc income08
+rename b8wten acheld08
+
+rename b8ten2 tenure08
+
+gen netpay08=.
+replace netpay08=b8cnetpy*52 if b8cnetpd==1 & b8cnetpy>=0
+replace netpay08=b8cnetpy*26 if b8cnetpd==2 & b8cnetpy>=0
+replace netpay08=b8cnetpy*13 if b8cnetpd==3 & b8cnetpy>=0
+replace netpay08=b8cnetpy*12 if b8cnetpd==4 & b8cnetpy>=0
+replace netpay08=b8cnetpy*1 if b8cnetpd==5 & b8cnetpy>=0
+replace netpay08=b8cnetwk*52 if b8cnetpd>5 & b8cnetpy>0 & b8cnetwk>0
+label variable netpay08 "Last time total take home pay - estimation about a year"
+sum netpay08
+hist netpay08 if netpay08<=120000
+tab netpay08 if netpay08>120000
+/*
+tab b8cnetpy b8cnetpd if netpay08==.
+gen netpay08_2=netpay08/52
+gen difnetpay08=netpay08_2 - b8cnetwk
+replace difnetpay08=. if b8cnetwk<1
+tab difnetpay08
+hist difnetpay08
+tab b8cnetpy if netpay08==.
+tab b8cnetpd if netpay08==.
+*/
+
+gen gropay08=.
+replace gropay08=b8cgropy*52 if b8cgropd==1 & b8cgropy>=0
+replace gropay08=b8cgropy*26 if b8cgropd==2 & b8cgropy>=0
+replace gropay08=b8cgropy*13 if b8cgropd==3 & b8cgropy>=0
+replace gropay08=b8cgropy*12 if b8cgropd==4 & b8cgropy>=0
+replace gropay08=b8cgropy*1 if b8cgropd==5 & b8cgropy>=0
+replace gropay08=b8cgrowk*52 if b8cgropd>5 & b8cgropy>0 & b8cgrowk>0
+label variable gropay08 "Last time gross pay before deductions - estimation about a year"
+
+drop b8cnetpy b8cnetpd b8cnetwk b8cgropy b8cgropd b8cgrowk
+
+merge 1:1 bcsid using "tenure_income"
+rename _merge merge_86_92_96_00_04_08
+save "tenure_income", replace
+
+/*
+CNETPAY
+
+| Last time you were paid, what was your total take home pay - that is after all
+| deductions for tax, National Insurance, union dues, pension and so on, but
+| including overtime, bonuses, commission and tips?
+|
+| INTERVIEWER:IF CM HAS MORE THE ONE JOB, ASK FOR MAIN JOB ONLY.
+| ENTER AMOUNT
+| TO NEAREST £.
+| ACCEPT ESTIMATES IF NECESSARY.
+| Range:1..999999
+
+CNETPRD
+
+| How long a period did that pay cover?
+| 1 One week
+| 2 A fortnight
+| 3 Four weeks
+| 4 A calendar month
+| 5 A year
+| 6 Some other period (SPECIFY AT NEXT QUESTION)
+| IF cohort member?s take home pay covers other period [CNETPRD = 6]
+
+CGROPAY
+
+| And, last time you were paid, what was your gross pay before deductions?
+| INTERVIEWER:IF CM HAS MORE THE ONE JOB, ASK FOR MAIN JOB ONLY.
+| ENTER AMOUNT TO THE NEAREST.
+| ACCEPT ESTIMATES IF NECESSARY.
+| Range:1..999999
+
+CGROPRD
+
+| How long a period did that pay cover?
+| 1 One week
+| 2 A fortnight
+| 3 Four weeks
+| 4 A calendar month
+| 5 A year
+| 6 Some other period (SPECIFY AT NEXT QUESTION)
+|
+
+CHECK EMP16
+IF the period cohort member?s net and gross pay covers is given [CNETPRD = RESPONSE
+AND CGROPRD = RESPONSE]
+|
+| IF the period cohort member?s net pay covers is different from the period cohort member?s
+| gross pay covers
+| |
+| | INTERVIEWER: The period you have entered as covered by CM's last gross pay is
+| | different from the period covered by their last net pay. Is this correct?
+| |
+END CHECK
+CHECK EMP21
+IF cohort member gives net pay and gross pay [(CNETPAY = RESPONSE) AND
+(CGROPAY = RESPONSE)]
+|
+| IF net pay is greater than or equal to gross pay [CNETPAY <= CGROPAY]
+| |
+| | INTERVIEWER: Gross pay must be greater or equal to Net pay. Please amend your
+| | answer or suppress this check.
+| |
+END CHECK
+*/
+
+clear
+use "tenure_income"
+
+label de housingtenure 1"Own (with mortgage) or shared ownership" 2"Rented from private" 3"Rented from Parents (relative) or rent-free" 4"Rented from Local Authority or Housing Asscociation" 5"Squatting or Other Situation" 6"living with parents (rent-free)"
+
+gen housingtenure08=.
+replace housingtenure08=1 if tenure08==1 | tenure08==2 | tenure08==3
+replace housingtenure08=2 if tenure08==4 & (rentom08==3 | rentom08==5)
+replace housingtenure08=3 if (tenure08==4 & rentom08==4) | tenure08==5
+replace housingtenure08=4 if tenure08==4 & (rentom08==1 | rentom08==2)
+replace housingtenure08=5 if tenure08==6 | tenure08==7
+*label de housingtenure08 1"'Own-outright' or 'Own-buying with help of mortgage' or 'Pay part rent and part mortage'" 2"Rented from 'Private landlord' or 'Other'" 3"'Rented from Parents' or 'Live here rent-free'" 4"Rented from 'Local Authority' or 'Housing Association/Scottish equiv.'" 5"Squatting or Other", modify
+label values housingtenure08 housingtenure
+
+tab housingtenure08 tenure08, m
+tab housingtenure08 rentom08, m
+
+gen housingtenure04=.
+replace housingtenure04=1 if tenure04==1 | tenure04==2 | tenure04==3
+replace housingtenure04=2 if tenure04==4 & (rentom04==3 | rentom04==5)
+replace housingtenure04=3 if (tenure04==4 & rentom04==4) | tenure04==5
+replace housingtenure04=4 if tenure04==4 & (rentom04==1 | rentom04==2)
+replace housingtenure04=5 if tenure04==6 | tenure04==7
+*label de housingtenure04 1"'Own-outright' or 'Own-buying with help of mortgage' or 'Pay part rent and part mortage'" 2"Rented from 'Private landlord' or 'Other'" 3"'Rented from Parents' or 'Live here rent-free'" 4"Rented from 'Local Authority' or 'Housing Association/Scottish equiv.'" 5"Squatting or Other", modify
+label values housingtenure04 housingtenure
+
+tab housingtenure04 tenure04, m
+tab housingtenure04 rentom04, m
+
+gen housingtenure00=.
+replace housingtenure00=1 if tenure00==1 | tenure00==2 | tenure00==3
+replace housingtenure00=2 if tenure00==4 & (rentom00==3 | rentom00==4 | rentom00==5 | rentom00==10 | rentom00==11)
+replace housingtenure00=3 if (tenure00==4 & (rentom00==8 | rentom00==9)) | tenure00==5
+replace housingtenure00=4 if tenure00==4 & (rentom00==1 | rentom00==2 | rentom00==6 | rentom00==7)
+replace housingtenure00=5 if tenure00==6 | tenure00==7
+label values housingtenure00 housingtenure
+
+tab housingtenure00 tenure00, m
+tab housingtenure00 rentom00, m
+
+gen housingtenure96=.
+replace housingtenure96=1 if tenure96==1 | tenure96==2 | (tenure96==8 & (tenure96_1==1 | tenure96_1==2 | tenure96_1==12))
+replace housingtenure96=2 if tenure96==4 | tenure96==5 | (tenure96==8 & (tenure96_1==4 | tenure96_1==5 | tenure96_1==18 | tenure96_1==19 | tenure96_1==20))
+replace housingtenure96=3 if tenure96==6 | tenure96==7 | (tenure96==8 & (tenure96_1==6 | tenure96_1==7 | tenure96_1==8 | tenure96_1==9 | tenure96_1==10 | tenure96_1==11 | tenure96_1==13 | tenure96_1==14 | tenure96_1==15 | tenure96_1==16 | tenure96_1==17))
+replace housingtenure96=4 if tenure96==3 | (tenure96==8 & (tenure96_1==3))
+replace housingtenure96=5 if (tenure96==8 & (tenure96_1>=21 & tenure96_1<=97)) | tenure96==8 & housingtenure96==.
+label values housingtenure96 housingtenure
+
+tab tenure96 housingtenure96, m
+tab tenure96_1 housingtenure96, m
+
+gen housingtenure92=.
+replace housingtenure92=1 if tenure92==1 | tenure92==2
+replace housingtenure92=2 if tenure92==7 
+replace housingtenure92=3 if tenure92==5 | tenure92==8
+replace housingtenure92=5 if tenure92==6 | tenure92==10
+replace housingtenure92=6 if tenure92==9
+replace housingtenure92=2 if housingtenure92==. & tenure92_1==3
+replace housingtenure92=6 if housingtenure92==. & tenure92_1==4
+replace housingtenure92=4 if housingtenure92==. & tenure92_1==2
+label values housingtenure92 housingtenure
+
+tab tenure92 housingtenure92, m
+tab tenure92_1 housingtenure92, m
+
+gen housingtenure86=.
+
+replace housingtenure86=1 if tenure86==1 | tenure86==2
+replace housingtenure86=2 if tenure86==4 | tenure86==5 | tenure86==6
+replace housingtenure86=4 if tenure86==3
+replace housingtenure86=5 if tenure86==7
+replace housingtenure86=1 if housingtenure86==. & tenure86_1==1
+replace housingtenure86=2 if housingtenure86==. & tenure86_1==2 
+replace housingtenure86=4 if housingtenure86==. & tenure86_1==3
+replace housingtenure86=5 if housingtenure86==. & tenure86_1==4
+label values housingtenure86 housingtenure
+label variable housingtenure86 "All CM's live with their parents"
+
+keep housingtenure08 freeleas08 accom08 residenc08 income08 netpay08 gropay08 housingtenure04 freeleas04 netpay04 gropay04 pnetpay04 housingtenure00 freeleas00 netpay00 gropay00 pnetpay00 housingtenure96 netpay96 housingtenure92 netpay92 gropay92 housingtenure86 income86 housing86
+*numlabel _all, add
+
+tab housingtenure08
+tab housingtenure04
+tab housingtenure00
+tab housingtenure96
+tab housingtenure92
+tab housingtenure86
+
+sum netpay08
+hist netpay08 if netpay08<=120000
+tab netpay08 if netpay08>120000
+sum netpay04
+hist netpay04 if netpay04<=120000
+tab netpay04 if netpay04>120000
+sum netpay00
+hist netpay00 if netpay00<=120000
+tab netpay00 if netpay00>120000
+sum netpay96
+hist netpay96 if netpay96<=120000
+tab netpay96 if netpay96>120000
+sum netpay92
+tab netpay92
+sum gropay92
+tab gropay92
+sum income86
+tab income86
+
+save "tenure_income", replace
+
+*********************************************************************************
+
+*2012
+
+/*
+clear
+use "N:\British Cohort Study\UK_data\7473-Forty-Two-Year Follow-Up, 2012\stata11\bcs70_2012_housing.dta" 
+
+gen B9HOMEDCMC=12*(B9HOMEDY-1900)+B9HOMEDM
+replace B9HOMEDCMC=1200 if B9HOMEDCMC<=0
+lab var B9HOMEDCMC "When moved out of adress or stopped travelling"
+label de B9HOMEDCMC 1200 "Before 2000", modify
+label values B9HOMEDCMC B9HOMEDCMC
+tab B9HOMEDCMC, mis
+
+drop B9HOMEDM
+
+save "Housing_2012", replace
+*/
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+********************************************************************************
+********************************************************************************
+********************************************************************************
+
+/*
+I try to compare the Information
+*/
+
+/*
+
+/*Compare*/
+
+/*Employment - Activity*/
+
+/*2012*/
+
+clear
+use "Empoyment2012.dta"
+keep if B9AENDCMC<=1296
+rename BCSID bcsid
+save "Empoyment_2012_short1.dta", replace
+
+/*till 2008*/
+
+clear
+use "activity_t2008.dta" 
+keep if WSWEEP08==1
+save "Empoyment_t2008_short1.dta", replace
+
+/*Compare*/
+
+merge m:m bcsid using "Empoyment_2012_short1.dta"
+*tab _merge
+keep if _merge==3
+/*Only Person "B25873F" give Information in both datasets*/
+
+/*Partnership*/
+
+/*2012*/
+
+clear
+use "Relationship2012"
+*tab B9RSTCMC, m
+keep if B9RSTCMC<=1296
+save "Relationship_2012_short1.dta", replace
+
+/*till 2008*/
+
+clear
+use "Partnership_t2008"
+keep if WSWEEP08==1
+save "Partnership_t2008_short1.dta", replace
+
+clear
+use "Partner_t2008"
+keep if WSWEEP08==1
+save "Partner_t2008_short1.dta", replace
+
+/*Compare*/
+
+merge m:m bcsid using "Relationship_2012_short1.dta"
+*tab _merge
+keep if _merge==3
+/*Only Person "B25873F" give Information in both datasets*/
+
+clear
+use "Partnership_t2008_short1.dta"
+
+merge m:m bcsid using "Relationship_2012_short1.dta"
+*tab _merge
+keep if _merge==3
+/*Only Person "B25873F" give Information in both datasets*/
+
+*/
+
+********************************************************************************
+
+/*
+/*Merge*/
+
+/*Pre-Test*/
+
+/*Partnership - Relationship*/
+
+clear
+use "Partnership_t2008"
+
+keep bcsid pship partner pendcmc page psex ptype poutcome
+
+replace pship=0 if pship==-1
+
+reshape wide partner pendcmc page psex ptype poutcome, i(bcsid) j(pship)
+
+gen lastp=.
+replace lastp=pendcmc1 if pendcmc2==. & pendcmc3==. & pendcmc4==. & pendcmc5==. & pendcmc6==. & pendcmc7==. & pendcmc8==. & pendcmc9==. & pendcmc1!=.
+replace lastp=pendcmc2 if pendcmc3==. & pendcmc4==. & pendcmc5==. & pendcmc6==. & pendcmc7==. & pendcmc8==. & pendcmc9==. & pendcmc2!=.
+replace lastp=pendcmc3 if pendcmc4==. & pendcmc5==. & pendcmc6==. & pendcmc7==. & pendcmc8==. & pendcmc9==. & pendcmc3!=.
+replace lastp=pendcmc4 if pendcmc5==. & pendcmc6==. & pendcmc7==. & pendcmc8==. & pendcmc9==. & pendcmc4!=.
+replace lastp=pendcmc5 if pendcmc6==. & pendcmc7==. & pendcmc8==. & pendcmc9==. & pendcmc5!=.
+replace lastp=pendcmc6 if pendcmc7==. & pendcmc8==. & pendcmc9==. & pendcmc6!=.
+replace lastp=pendcmc7 if pendcmc8==. & pendcmc9==. & pendcmc7!=.
+replace lastp=pendcmc8 if pendcmc9==. & pendcmc8!=.
+replace lastp=pendcmc9 if pendcmc9!=.
+label de lastp -8"Dont know/Not enough info" -6"Partnership still current at morst recent sweep", modify
+label values lastp lastp
+*tab lastp
+
+keep bcsid lastp
+
+save "P_2008_wide", replace
+
+clear
+use "Relationship2012"
+numlabel _all, add
+
+gen id=_n
+gen x1=B9RSTCMC
+gen x2=B9RWHMACMC
+reshape long date event x, i(id)
+sort bcsid
+*setzt voraus, dass die Variable x. durchnummeriert sind, gilt auch für date., event.
+
+tab B9RSTY B9RNRANY
+
+save "P_2012_long", replace
+
+clear
+use "P_2008_wide"
+merge 1:1 bcsid using "Relationship2012"
+sort bcsid
+
+save "P3", replace
+
+/*
+clear
+use "P1"
+append using "P2"
+sort bcsid
+*/
+*/
+
+/*After running this file in STATA, open 'Data Handling Step 2' in R*/
